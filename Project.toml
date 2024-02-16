@@ -1,0 +1,36 @@
+name = "NistyPQC"
+uuid = "2b8046e5-a088-403d-a84e-acdf171f9a66"
+authors = ["Erich Neun <erich-9@gmx.de>"]
+version = "0.0.1"
+
+[deps]
+ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Primes = "27ebfcd6-29c5-5fa9-bf4b-fb8fc14df3ae"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+SHAKE = "9c8de619-9405-45f5-abce-b523323dfc2f"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+Aqua = "0.8"
+ArgCheck = "2.3"
+DataDeps = "0.7"
+Nettle = "1"
+OrderedCollections = "1.6"
+Primes = "0.5"
+Random = "<0.0.1, 1"
+SHA = "<0.0.1, 0.7, 1"
+SHAKE = "0.0.1"
+StaticArrays = "1.9"
+Test = "<0.0.1, 1"
+julia = "1"
+
+[extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
+Nettle = "49dea1ee-f6fa-5aa6-9a11-8816cee7d4b9"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Aqua", "DataDeps", "Nettle", "Test"]

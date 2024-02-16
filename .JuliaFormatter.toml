@@ -1,0 +1,9 @@
+always_for_in = true
+for_in_replacement = "∈"
+format_docstrings = true
+format_markdown = true
+normalize_line_endings = "unix"
+remove_extra_newlines = true
+verbose = true
+whitespace_ops_in_indices = true
+whitespace_typedefs = true
