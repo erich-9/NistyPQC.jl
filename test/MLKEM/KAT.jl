@@ -1,4 +1,4 @@
-import ..Utilities: KAT
+import ..Utilities: KAT, NistDRBG
 
 kats = KAT.register_files(
     KAT.NISTFormattedFile,
@@ -30,11 +30,13 @@ for kat ∈ kats
 
     @testset "KAT.$(kat.id)" begin
         for t ∈ kat.file
-            (; ek, dk) = X.generate_keys(z = t["z"], d = t["d"])
+            NistyPQC.rng = NistDRBG.AES256CTR(t["seed"])
+
+            (; ek, dk) = X.generate_keys()
             @test ek == t["pk"]
             @test dk == t["sk"]
 
-            (; K, c) = X.encapsulate_secret(t["pk"]; m = t["msg"])
+            (; K, c) = X.encapsulate_secret(t["pk"])
             @test c == t["ct"]
             @test K == t["ss"]
 
