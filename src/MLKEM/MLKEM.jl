@@ -30,16 +30,11 @@ for (level, base_parameters) ∈ level_parameters
     include("KPKE.jl")
 
     function generate_keys(;
-        z::Union{Nothing, AbstractVector{UInt8}} = nothing,
-        d::Union{Nothing, AbstractVector{UInt8}} = nothing,
+        z::AbstractVector{UInt8} = rand(rng, UInt8, length_R),
+        d::AbstractVector{UInt8} = rand(rng, UInt8, n₂),
     )
-        if z === nothing
-            z = rand(rng, UInt8, length_R)
-        else
-            @argcheck length(z) == length_R
-        end
-
-        @argcheck d === nothing || length(d) == n₂
+        @argcheck length(z) == length_R
+        @argcheck length(d) == n₂
 
         (ekₚₖₑ, dkₚₖₑ) = KPKE.generate_keys(d = d)
 
@@ -51,16 +46,11 @@ for (level, base_parameters) ∈ level_parameters
 
     function encapsulate_secret(
         ek::AbstractVector{UInt8};
-        m::Union{Nothing, AbstractVector{UInt8}} = nothing,
+        m::AbstractVector{UInt8} = rand(rng, UInt8, n₂),
     )
         @argcheck length(ek) == length_ek
         @argcheck ek[1:λ] == byte_encode(dₘₐₓ, byte_decode(dₘₐₓ, ek[1:λ]))
-
-        if m === nothing
-            m = rand(rng, UInt8, n₂)
-        else
-            @argcheck length(m) == n₂
-        end
+        @argcheck length(m) == n₂
 
         (K::Vector{UInt8}, r) = G([m; H(ek)])
         c = KPKE.encrypt(ek, m, r)

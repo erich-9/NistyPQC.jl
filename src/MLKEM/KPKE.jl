@@ -8,11 +8,7 @@ import ...Sampling: sample_ntt, sample_polycbd
 
 import ..rng, ..k, ..η₁, ..η₂, ..dᵤ, ..dᵥ, ..λ
 
-function generate_keys(; d = nothing)
-    if d === nothing
-        d = rand(rng, UInt8, n₂)
-    end
-
+function generate_keys(; d = rand(rng, UInt8, n₂))
     (ρ, σ) = G(d)
 
     B̂ = [sample_ntt(XOF(ρ, j, i)) for i ∈ 0:(k - 1), j ∈ 0:(k - 1)]
