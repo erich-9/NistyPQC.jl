@@ -68,7 +68,7 @@ function pk_from_signature!(adrs, sig_xmss, msg, idx::π.T_idx)
         auth = sig_xmss[pos:(pos + π.ρ - 1)]
         pos += π.ρ
 
-        y = iszero(idx % 2) ? vcat(node, auth) : vcat(auth, node)
+        y = iseven(idx) ? vcat(node, auth) : vcat(auth, node)
 
         idx >>= 1
 

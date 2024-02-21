@@ -95,7 +95,7 @@ function pk_from_signature!(adrs, sig_fors, msg)
             auth = sig_fors[pos:(pos + π.n₂ - 1)]
             pos += π.n₂
 
-            y = iszero(idx % 2) ? vcat(node, auth) : vcat(auth, node)
+            y = iseven(idx) ? vcat(node, auth) : vcat(auth, node)
 
             idx >>= 1
             idx¹ >>= 1
