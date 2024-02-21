@@ -1,7 +1,7 @@
 module General
 
-function split_equally(v, chunksize)
-    Iterators.partition(v, length(v) ÷ chunksize)
+function split_equally(v, chunks)
+    Iterators.partition(v, length(v) ÷ chunks)
 end
 
 end # module

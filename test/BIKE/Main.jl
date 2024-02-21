@@ -1,84 +1,80 @@
 import .BIKE
-import .BIKE.Parameters: level_parameters, λ
-
-repetitions = 1
+import .BIKE.Parameters: level_parameters, ℓ
 
 for level ∈ keys(level_parameters)
     @eval X = BIKE.$level
 
-    @testset "BIKE.$level.bits2ring" begin
-        for _ ∈ 1:repetitions
-            coeffs₁ = BitVector(rand(Bool, X.r))
-            coeffs₂ = X.Ring.ring2bits(X.Ring.bits2ring(coeffs₁))
-            @test coeffs₁ == coeffs₂
+    R = X.Ring
 
-            f₁ = rand(X.Ring.Element)
-            f₂ = X.Ring.bits2ring(X.Ring.ring2bits(f₁))
-            @test f₁ == f₂
-        end
+    @testset "BIKE.$level.Ring.to_bits" begin
+        coeffs₁ = rand(Bool, X.r)
+        coeffs₂ = R.to_bits(R.Element(coeffs₁))
+        @test coeffs₁ == coeffs₂
+
+        f₁ = rand(R.Element)
+        f₂ = R.Element(R.to_bits(f₁))
+        @test f₁ == f₂
     end
 
-    @testset "BIKE.$level.bytes2ring" begin
-        for _ ∈ 1:repetitions
-            coeffs₁ = Vector{UInt8}(rand(Bool, X.r_bytes))
-            coeffs₂ = X.Ring.ring2bytes(X.Ring.bytes2ring(coeffs₁))
-            @test coeffs₁ == coeffs₂
+    @testset "BIKE.$level.Ring.to_bytes" begin
+        coeffs₁ = rand(UInt8, X.r_bytes)
+        coeffs₁[end] >>= 8X.r_bytes - X.r
+        coeffs₂ = R.to_bytes(R.Element(coeffs₁))
+        @test coeffs₁ == coeffs₂
 
-            f₁ = rand(X.Ring.Element)
-            f₂ = X.Ring.bytes2ring(X.Ring.ring2bytes(f₁))
-            @test f₁ == f₂
-        end
+        f₁ = rand(R.Element)
+        f₂ = R.Element(R.to_bytes(f₁))
+        @test f₁ == f₂
     end
 
-    # @testset "Ring" begin
-    #     import .BIKE.Ring: Element, isinvertible
+    @testset "BIKE.$level.Ring" begin
+        f₁ = rand(R.Element)
+        f₂ = rand(R.Element)
+        f₃ = rand(R.Element)
 
-    #     for _ ∈ 1:repetitions
-    #         f₁ = rand(Element)
-    #         f₂ = rand(Element)
-    #         f₃ = rand(Element)
+        @test f₁ + zero(R.Element) == f₁
+        @test f₁ * one(R.Element) == f₁
+        @test f₁ + f₂ == f₂ + f₁
+        @test f₁ * f₂ == f₂ * f₁
+        @test f₁ + (f₂ + f₃) == (f₁ + f₂) + f₃
+        @test f₁ * (f₂ * f₃) == (f₁ * f₂) * f₃
+        @test f₁ * (f₂ + f₃) == f₁ * f₂ + f₁ * f₃
+        @test f₁ + f₁ == zero(R.Element)
 
-    #         @test f₁ + zero(Element) == f₁
-    #         @test f₁ * one(Element) == f₁
-    #         @test f₁ + f₂ == f₂ + f₁
-    #         @test f₁ * f₂ == f₂ * f₁
-    #         @test f₁ + (f₂ + f₃) == (f₁ + f₂) + f₃
-    #         @test f₁ * (f₂ * f₃) == (f₁ * f₂) * f₃
-    #         @test f₁ * (f₂ + f₃) == f₁ * f₂ + f₁ * f₃
-    #         @test f₁ + f₁ == zero(Element)
-    #         @test !isinvertible(f₁) || f₁^-1 * f₁ == one(Element)
-    #     end
-    # end
+        if !R.isinvertible(f₁)
+            f₁ += one(R.Element)
+        end
 
-    # @testset "Sampling" begin
-    #     import .BIKE.Parameters: w, t
-    #     import .BIKE.Ring: Element, ring2bits
-    #     import .BIKE.Sampling: D̂, Ĥ, K̂, L̂
+        @test f₁^-1 * f₁ == one(f₁)
+    end
 
-    #     for _ ∈ 1:repetitions
-    #         seed = rand(UInt8, 32)
+    @testset "BIKE.$level.Sampling" begin
+        seed = rand(UInt8, ℓ)
 
-    #         D = D̂(seed)
-    #         H = Ĥ(seed)
-    #         K = K̂(rand(UInt8, 32), rand(UInt8, 32))
-    #         L = L̂(rand(Element), rand(Element))
+        D = X.Sampling.D̂(seed)
+        H = X.Sampling.Ĥ(seed)
 
-    #         @test sum(ring2bits(D)) == w ÷ 2
-    #         @test sum(map(sum ∘ ring2bits, H)) == t
-    #         @test length(K) == λ
-    #         @test length(L) == λ
-    #     end
-    # end
+        @test R.weight.(D) == [X.d, X.d]
+        @test sum(R.weight.(H)) == X.t
+    end
 
-    # @testset "BIKE" begin
-    #     import .BIKE: generate_keys, encapsulate_secret, decapsulate_secret
+    @testset "BIKE.$level.Hashing" begin
+        K = X.Hashing.K̂(rand(UInt8, ℓ), rand(UInt8, X.r_bytes + ℓ))
+        L = X.Hashing.L̂(rand(R.Element), rand(R.Element))
 
-    #     for _ ∈ 1:repetitions
-    #         (; ek, dk) = generate_keys()
-    #         (; K, c) = encapsulate_secret(ek)
-    #         K̃ = decapsulate_secret(c, dk)
+        @test length(K) == ℓ
+        @test length(L) == ℓ
+    end
 
-    #         @test K == K̃
-    #     end
-    # end
+    @testset "BIKE.$level" begin
+        import StaticArrays: SizedVector
+
+        z = SizedVector{X.ℓ, UInt8}(zeros(UInt8, X.ℓ))
+
+        (; ek, dk) = X.generate_keys(; seed = (; h = z, σ = z))
+        (; K, c) = X.encapsulate_secret(ek)
+        K̃ = X.decapsulate_secret(c, dk)
+
+        @test K == K̃
+    end
 end
