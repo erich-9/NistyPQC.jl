@@ -73,7 +73,7 @@ kats = KAT.register_files(
 for kat ∈ kats
     @eval X = SLHDSA.$(kat.level)
 
-    @testset "KAT.$(kat.id)" begin
+    @testset "SLHDSA.$(kat.level): KAT.$(kat.id)" begin
         for t ∈ kat.file
             pk = X.PublicKey(t["pk"][1:(X.n)], t["pk"][(end - X.n + 1):end])
             sk = X.SecretKey(t["sk"][1:(X.n)], t["sk"][(end - X.n + 1):end], pk)

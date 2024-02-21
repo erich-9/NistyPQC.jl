@@ -1,6 +1,6 @@
 import .SLHDSA.Parameters: level_parameters
 
-@testset "bytes2int" begin
+@testset "SLHDSA.bytes2int" begin
     import .SLHDSA.General: bytes2int, int2bytes
 
     l = rand(0:sizeof(UInt))
@@ -14,7 +14,7 @@ import .SLHDSA.Parameters: level_parameters
     @test x == y
 end
 
-@testset "base_2ᵇ" begin
+@testset "SLHDSA.base_2ᵇ" begin
     import .SLHDSA.General: base_2ᵇ
 
     f(b, xs) =
@@ -40,7 +40,7 @@ for level ∈ keys(level_parameters)
     sa = X.SecretAddress(sk_seed, pk_seed)
     pa = X.PublicAddress(pk_seed)
 
-    @testset "$level.WOTS" begin
+    @testset "SLHDSA.$level.WOTS" begin
         msg = rand(UInt8, X.WOTS.π.μ)
 
         pk₁ = X.WOTS.pk!(sa)
@@ -52,7 +52,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "$level.XMSS" begin
+    @testset "SLHDSA.$level.XMSS" begin
         msg = rand(UInt8, X.XMSS.π.μ)
         idx = rand(0:(X.XMSS.π.ν - 1))
 
@@ -65,7 +65,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "$level.Hypertree" begin
+    @testset "SLHDSA.$level.Hypertree" begin
         msg = rand(UInt8, X.Hypertree.π.μ)
         idx_tree = rand(0:(X.Hypertree.π.ν - 1))
         idx_leaf = rand(0:(X.XMSS.π.ν - 1))
@@ -79,7 +79,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "$level.FORS" begin
+    @testset "SLHDSA.$level.FORS" begin
         msg = rand(UInt8, X.FORS.π.μ)
         idx_tree = rand(0:(X.Hypertree.π.ν - 1))
         idx_leaf = rand(0:(X.XMSS.π.ν - 1))
@@ -95,7 +95,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "$level.SLHDSA (randomized)" begin
+    @testset "SLHDSA.$level (randomized)" begin
         msg = rand(UInt8, 10_000)
 
         (pk, sk) = X.generate_keys()
@@ -108,7 +108,7 @@ for level ∈ keys(level_parameters)
         @test !X.verify_signature(msg, map(isqrt, sig), pk)
     end
 
-    @testset "$level.SLHDSA (not randomized)" begin
+    @testset "SLHDSA.$level (not randomized)" begin
         import StaticArrays: SizedVector
 
         z = SizedVector{X.n, UInt8}(zeros(UInt8, X.n))

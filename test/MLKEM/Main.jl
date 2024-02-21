@@ -1,7 +1,7 @@
 import .MLKEM
 import .MLKEM.Parameters: level_parameters, n, n₂, q, dₘₐₓ
 
-@testset "bits2bytes" begin
+@testset "MLKEM.bits2bytes" begin
     import .MLKEM.General: bytes2bits, bits2bytes
 
     l = rand(0:10_000)
@@ -15,7 +15,7 @@ import .MLKEM.Parameters: level_parameters, n, n₂, q, dₘₐₓ
     @test B == C
 end
 
-@testset "compress" begin
+@testset "MLKEM.compress" begin
     import .MLKEM.General: compress, decompress
 
     mod⁺⁻(x, m) = mod(x, (-(m + 1) ÷ 2 + 1):(m ÷ 2))
@@ -36,7 +36,7 @@ end
     end
 end
 
-@testset "byte_encode" begin
+@testset "MLKEM.byte_encode" begin
     import .MLKEM.General: byte_encode, byte_decode
 
     for d ∈ 1:dₘₐₓ
@@ -53,7 +53,7 @@ end
     end
 end
 
-@testset "ntt" begin
+@testset "MLKEM.ntt" begin
     import .MLKEM.NumberTheory: R_q, T_q, ntt, ntt⁻¹
 
     f = R_q(mod.(rand(Int, n), q))
@@ -68,7 +68,7 @@ end
 for level ∈ keys(level_parameters)
     @eval X = MLKEM.$level
 
-    @testset "$level.KPKE" begin
+    @testset "MLKEM.$level.KPKE" begin
         m = rand(UInt8, n₂)
         r = rand(UInt8, 32)
 
@@ -79,7 +79,7 @@ for level ∈ keys(level_parameters)
         @test m == m̃
     end
 
-    @testset "$level.MLKEM" begin
+    @testset "MLKEM.$level" begin
         (; ek, dk) = X.generate_keys()
         (; K, c) = X.encapsulate_secret(ek)
         K̃ = X.decapsulate_secret(c, dk)

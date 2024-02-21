@@ -28,7 +28,7 @@ kats = KAT.register_files(
 for kat ∈ kats
     @eval X = MLKEM.$(kat.level)
 
-    @testset "KAT.$(kat.id)" begin
+    @testset "MLKEM.$(kat.level): KAT.$(kat.id)" begin
         for t ∈ kat.file
             NistyPQC.rng = NistDRBG.AES256CTR(t["seed"])
 
