@@ -72,12 +72,12 @@ for (level, base_parameters) ∈ level_parameters
         sk::SecretKey;
         randomize::Union{Bool, StaticVector{n, UInt8}} = true,
     )
-        if randomize isa StaticVector{n, UInt8}
-            opt_rand = randomize
+        opt_rand = if randomize isa StaticVector{n, UInt8}
+            randomize
         elseif randomize === false
-            opt_rand = sk.pk.seed
+            sk.pk.seed
         else
-            opt_rand = rand(rng, UInt8, n)
+            rand(rng, UInt8, n)
         end
 
         randomizer = hashers_msg.PRF(sk.prf, vcat(opt_rand, msg), n)
