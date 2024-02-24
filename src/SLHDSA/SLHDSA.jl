@@ -83,7 +83,7 @@ for (level, base_parameters) ∈ level_parameters
         randomizer = hashers_msg.PRF(sk.prf, vcat(opt_rand, msg), n)
 
         adrs = SecretAddress(sk.seed, sk.pk.seed)
-        (msg_digest, idx_tree, idx_leaf) = digest_message(adrs, msg, randomizer, sk.pk)
+        (msg_digest, idx_tree, idx_leaf) = digest_message!(adrs, msg, randomizer, sk.pk)
 
         sig_fors = FORS.sign_message!(adrs, msg_digest)
         sig_tree = Hypertree.sign_message(
@@ -105,7 +105,7 @@ for (level, base_parameters) ∈ level_parameters
             sig_tree = sig[(end - parameters_tree.σ + 1):end]
 
             adrs = PublicAddress(pk.seed)
-            (msg_digest, idx_tree, idx_leaf) = digest_message(adrs, msg, randomizer, pk)
+            (msg_digest, idx_tree, idx_leaf) = digest_message!(adrs, msg, randomizer, pk)
 
             pk.root == Hypertree.pk_from_signature(
                 FORS.pk_from_signature!(adrs, sig_fors, msg_digest),
@@ -116,7 +116,7 @@ for (level, base_parameters) ∈ level_parameters
         end
     end
 
-    function digest_message(adrs, msg, randomizer, pk)
+    function digest_message!(adrs, msg, randomizer, pk)
         hash = hashers_msg.H(vcat(randomizer, pk.seed), vcat(pk.root, msg), sum(m))
 
         msg_digest = hash[1:(m.msg_digest)]
