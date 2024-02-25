@@ -1,6 +1,6 @@
 module Addressing
 
-import ...General: int2bytes, int2bytes!
+import ....Utilities: int2bytes, int2bytes!
 import ..n, ..parameters_adrs
 
 import OrderedCollections: OrderedDict

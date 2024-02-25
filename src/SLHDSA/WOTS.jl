@@ -1,6 +1,7 @@
 module WOTS
 
-import ...General: int2bytes, base_2ᵇ
+import ....Utilities: int2bytes
+import ...General: base_2ᵇ
 import ..Addressing:
     change_type_to_wots_pk!, change_type_to_wots_prf!, set_chain_address!, set_hash_address!
 import ..parameters_wots as π

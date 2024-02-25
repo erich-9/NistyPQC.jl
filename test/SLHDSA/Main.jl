@@ -1,19 +1,5 @@
 import .SLHDSA.Parameters: level_parameters
 
-@testset "SLHDSA.bytes2int" begin
-    import .SLHDSA.General: bytes2int, int2bytes
-
-    l = rand(0:sizeof(UInt))
-
-    bs = rand(UInt8, l)
-    cs = int2bytes(bytes2int(bs), l)
-    @test bs == cs
-
-    x = rand(zero(UInt):(oneunit(UInt) << 8l - 1))
-    y = bytes2int(int2bytes(x, l))
-    @test x == y
-end
-
 @testset "SLHDSA.base_2ᵇ" begin
     import .SLHDSA.General: base_2ᵇ
 

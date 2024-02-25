@@ -24,7 +24,6 @@ for (level, base_parameters) ∈ level_parameters
     const length_dk = 2r_bytes + ℓ
     const length_c = r_bytes + ℓ
 
-    include("General.jl")
     include("Ring.jl")
     include("Sampling.jl")
     include("Hashing.jl")
@@ -79,7 +78,8 @@ for (level, base_parameters) ∈ level_parameters
         c₀ = Ring.Element(c[begin:(begin + r_bytes - 1)])
         c₁ = c[(end - ℓ + 1):end]
 
-        (h₀, h₁) = map(Ring.Element, partition(dk[begin:(begin + 2r_bytes - 1)], r_bytes))
+        h₀ = Ring.Element(dk[begin:(begin + r_bytes - 1)])
+        h₁ = Ring.Element(dk[(begin + r_bytes):(begin + 2r_bytes - 1)])
         σ = dk[(end - ℓ + 1):end]
 
         ẽ = decode(c₀ * h₀, h₀, h₁)

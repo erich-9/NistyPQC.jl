@@ -1,6 +1,6 @@
 module Ring
 
-import ..General
+import ....Utilities: bits2bytes, bytes2bits
 import ..r, ..r_bytes
 
 struct Element
@@ -15,8 +15,8 @@ function to_bits(a::Element)
     a.coeffs
 end
 
-Element(bytes::AbstractVector{UInt8}) = Element(General.from_bytes(bytes))
-to_bytes(a::Element) = General.to_bytes(to_bits(a))
+Element(bytes::AbstractVector{UInt8}) = Element(bytes2bits(bytes, r))
+to_bytes(a::Element) = bits2bytes(to_bits(a))
 
 Base.copy(a::Element) = Element(copy(a.coeffs))
 Base.:(==)(a::Element, b::Element) = a.coeffs == b.coeffs

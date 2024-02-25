@@ -11,8 +11,8 @@ for (level, base_parameters) ∈ level_parameters
     export generate_keys, sign_message, verify_signature
 
     import ...rng
+    import ...Utilities: bytes2int
     import ..Parameters: derived_parameters
-    import ..General: bytes2int
 
     import ArgCheck: @argcheck
     import Base.Iterators: partition
