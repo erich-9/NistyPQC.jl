@@ -7,42 +7,45 @@ bitrev(i) = parse(Int, reverse(bitstring(i))[1:(ω - 1)], base = 2)
 const ζ_bitrev = [powermod(ζ, bitrev(i), q) for i ∈ 1:(n₀ - 1)]
 const ζ_2bitrevp = [powermod(ζ, 2bitrev(i) + 1, q) for i ∈ 0:(n₀ - 1)]
 
-for T ∈ [:R_q, :T_q]
+for F ∈ [:Rq, :Tq]
     @eval begin
-        struct $T
+        struct $F
             data::Vector{Int}
         end
 
-        Base.zero(::Type{$T}) = $T(zeros(Int, n))
-        Base.zero(::$T) = zero($T)
-        Base.transpose(f̂::$T) = f̂
+        Base.zero(::Type{$F}) = $F(zeros(Int, n))
+        Base.zero(::$F) = zero($F)
+        Base.transpose(f̂::$F) = f̂
     end
 
-    for (op, arity, args, map_back) ∈ [
-        (:getindex, 1, [:(x::Int)], false),
-        (:iterate, 1, [:(x::Int)], false),
-        (:getindex, 1, [], false),
-        (:iterate, 1, [], false),
-        (:length, 1, [], false),
-        (:(==), 2, [], false),
-        (:(-), 1, [], true),
-        (:(+), 2, [], true),
-        (:(-), 2, [], true),
+    for (signatures, map_back) ∈ [
+        ([([:getindex, :iterate], 1, [[], [:(x::Int)]])], false),
+        ([([:length], 1, [[]]), ([:(==)], 2, [[]])], false),
+        ([([:(-)], 1, [[]]), ([:(+), :(-)], 2, [[]])], true),
     ]
-        args_rhs = [x.args[1] for x ∈ args]
+        for (ops, arity, argss_lhs) ∈ signatures
+            for op ∈ ops
+                for args_lhs ∈ argss_lhs
+                    args_F_lhs = (:($(Symbol(:x, i))::$F) for i ∈ 1:arity)
+                    args_F_rhs = (:($(Symbol(:x, i)).data) for i ∈ 1:arity)
 
-        lhs = :(Base.$op($((:($(Symbol(:x, i))::$T) for i ∈ 1:arity)...), $(args...)))
-        rhs = :($op($((:($(Symbol(:x, i)).data) for i ∈ 1:arity)...), $(args_rhs...)))
+                    args_rhs = [x.args[1] for x ∈ args_lhs]
 
-        if map_back
-            rhs = :($T(mod.($rhs, q)))
+                    lhs = :(Base.$op($(args_F_lhs...), $(args_lhs...)))
+                    rhs = :($op($(args_F_rhs...), $(args_rhs...)))
+
+                    if map_back
+                        rhs = :($F(mod.($rhs, q)))
+                    end
+
+                    @eval $lhs = $rhs
+                end
+            end
         end
-
-        @eval $lhs = $rhs
     end
 end
 
-function Base.:(*)(f̂::T_q, ĝ::T_q)
+function Base.:(*)(f̂::Tq, ĝ::Tq)
     # @assert length(f̂) == length(ĝ) == n
 
     ĥ = Vector{Int}(undef, n)
@@ -51,14 +54,14 @@ function Base.:(*)(f̂::T_q, ĝ::T_q)
             basecase_multiply(f̂[2i - 1], f̂[2i], ĝ[2i - 1], ĝ[2i], ζ_2bitrevp[i])
     end
 
-    T_q(ĥ)
+    Tq(ĥ)
 end
 
 function basecase_multiply(a₀, a₁, b₀, b₁, γ)
     mod.((a₀ * b₀ + a₁ * b₁ * γ, a₀ * b₁ + a₁ * b₀), q)
 end
 
-function ntt(f::R_q)
+function ntt(f::Rq)
     # @assert length(f) == n
 
     f̂ = copy(f.data)
@@ -78,10 +81,10 @@ function ntt(f::R_q)
         ϕ >>= 1
     end
 
-    T_q(f̂)
+    Tq(f̂)
 end
 
-function ntt⁻¹(f̂::T_q)
+function ntt⁻¹(f̂::Tq)
     # @assert length(f̂) == n
 
     f = copy(f̂.data)
@@ -101,7 +104,7 @@ function ntt⁻¹(f̂::T_q)
         ϕ <<= 1
     end
 
-    R_q(mod.(f * n₀⁻¹, q))
+    Rq(mod.(f * n₀⁻¹, q))
 end
 
 end # module

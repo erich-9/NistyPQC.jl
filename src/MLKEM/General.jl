@@ -1,18 +1,7 @@
 module General
 
+import ...Utilities: bits2bytes, bytes2bits
 import ..Parameters: n, n₂, q, dₘₐₓ
-
-function bits2bytes(b)
-    B = Vector{UInt8}(undef, length(b) >> 3)
-    unsafe_copyto!(pointer(B), reinterpret(Ptr{UInt8}, pointer(b.chunks)), sizeof(B))
-    B
-end
-
-function bytes2bits(B)
-    b = BitVector(undef, length(B) << 3)
-    unsafe_copyto!(reinterpret(Ptr{UInt8}, pointer(b.chunks)), pointer(B), sizeof(B))
-    b
-end
 
 function compress(d, x::Integer)
     div(x << d, q, RoundNearestTiesUp)

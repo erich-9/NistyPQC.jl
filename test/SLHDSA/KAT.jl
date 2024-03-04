@@ -70,13 +70,13 @@ kats = KAT.register_files(
     ],
 )
 
+rng = NistyPQC.rng
+
 for kat ∈ kats
     @eval X = SLHDSA.$(kat.level)
 
     @testset "SLHDSA.$(kat.level): KAT.$(kat.id)" begin
         for t ∈ kat.file
-            pk = X.PublicKey(t["pk"][1:(X.n)], t["pk"][(end - X.n + 1):end])
-            sk = X.SecretKey(t["sk"][1:(X.n)], t["sk"][(end - X.n + 1):end], pk)
             msg = t["msg"]
 
             NistyPQC.rng = NistDRBG.AES256CTR(t["seed"])
@@ -84,9 +84,11 @@ for kat ∈ kats
             (; pk, sk) = X.generate_keys()
             sig = X.sign_message(msg, sk)
 
-            @test t["sk"] == vcat(sk.seed, sk.prf, sk.pk.seed, sk.pk.root)
-            @test t["pk"] == vcat(pk.seed, pk.root)
+            @test t["sk"] == sk
+            @test t["pk"] == pk
             @test t["sm"] == vcat(sig, t["msg"])
         end
     end
 end
+
+NistyPQC.rng = rng

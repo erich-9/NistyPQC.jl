@@ -109,9 +109,7 @@ for level ∈ keys(level_parameters)
     end
 
     @testset "SLHDSA.$level (not randomized)" begin
-        import StaticArrays: SizedVector
-
-        z = SizedVector{X.n, UInt8}(zeros(UInt8, X.n))
+        z = zeros(UInt8, X.n)
         msg = rand(UInt8, 10_000)
 
         (pk, sk) = X.generate_keys(; seed = (; sk = z, prf = z, pk = z))

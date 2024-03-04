@@ -16,7 +16,7 @@ function derived_parameters(level, base_parameters)
     r_bytes = cld(r, 8)
     d = w ÷ 2
     θ = (d + 1) ÷ 2
-    threshold = (S, i) -> max(round(Int, θ₀ * S + θ₁, RoundDown), θ)
+    threshold = (S, i) -> max(floor(Int, θ₀ * S + θ₁), θ)
 
     (; identifier = "BIKE-Level$(level_number)", r_bytes, d, θ, threshold)
 end

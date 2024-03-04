@@ -3,6 +3,7 @@ module Sampling
 import ..r, ..d, ..t
 import ..Ring
 
+import Base.Iterators: partition
 import Random: AbstractRNG, bitrand
 import SHAKE: SHAKE256RNG
 
@@ -15,7 +16,7 @@ end
 
 function Ĥ(seed)
     positions = random_positions(SHAKE256RNG(seed), 2r, t)
-    map(Ring.Element, Iterators.partition(positions, r))
+    map(Ring.Element, partition(positions, r))
 end
 
 function random_positions(rng, len, choices)

@@ -103,7 +103,7 @@ function get_algorithm_parameters(n, d, h¹, a, k, lg_w, hashers)
 
     w = 1 << lg_w
     ℓ₁ = cld(8n, lg_w)
-    ℓ₂ = round(Int, log(2, ℓ₁ * (w - 1)) / lg_w, RoundDown) + 1
+    ℓ₂ = floor(Int, log2(ℓ₁ * (w - 1)) / lg_w) + 1
     ℓ = ℓ₁ + ℓ₂
 
     h² = (d - 1) * h¹

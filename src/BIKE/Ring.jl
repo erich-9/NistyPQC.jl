@@ -43,7 +43,7 @@ function Base.:*(a::Element, b::Element)
     Element(res)
 end
 
-const iₘₐₓ = round(Int, log(2, r - 2), RoundDown)
+const iₘₐₓ = floor(Int, log2(r - 2))
 const digits_rm2 = [c == '1' for c ∈ reverse(bitstring(r - 2))][2:(iₘₐₓ + 1)]
 
 function pow_2ⁿ(a::Element, n)

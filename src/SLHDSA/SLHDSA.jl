@@ -14,6 +14,7 @@ for (level, base_parameters) ∈ level_parameters
     import ..Parameters: derived_parameters
     import ..General: bytes2int
 
+    import Base.Iterators: partition
     import StaticArrays: MVector, StaticVector
 
     const (level_number, variant, n, _...) = $base_parameters
@@ -58,7 +59,7 @@ for (level, base_parameters) ∈ level_parameters
         (sk_seed, sk_prf, pk_seed) = if seed !== nothing
             (seed.sk, seed.prf, seed.pk)
         else
-            MVector{n, UInt8}.(Iterators.partition(rand(rng, UInt8, 3n), n))
+            MVector{n, UInt8}.(partition(rand(rng, UInt8, 3n), n))
         end
 
         pk = PublicKey(pk_seed, Hypertree.pk(sk_seed, pk_seed))

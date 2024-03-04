@@ -1,5 +1,6 @@
 module Parameters
 
+import Base.Iterators: countfrom, filter, partition, take
 import OrderedCollections: OrderedDict
 import Primes: isprime
 import SHA: sha3_256, sha3_512
@@ -20,9 +21,9 @@ const n₀ = n >> 1 # = 128
 const n₁ = n >> 2 # = 64
 const n₂ = n >> 3 # = 32
 
-const q = first(Iterators.filter(isprime, Iterators.countfrom(κ * n + 1, n))) # = 3329
+const q = first(filter(isprime, countfrom(κ * n + 1, n))) # = 3329
 
-const dₘₐₓ = round(Int, log(2, q), RoundUp) # = 12
+const dₘₐₓ = ceil(Int, log2(q)) # = 12
 const ζ = findfirst(x -> powermod(x, n₀, q) == q - 1, 1:q) # 17
 const n₀⁻¹ = invmod(n₀, q) # = 3303
 
@@ -35,7 +36,7 @@ XOF(ρ, i, j) = shake128_xof([ρ; UInt8(i); UInt8(j)])
 H(s) = sha3_256(s)[1:length_H]
 J(s) = shake256(s, UInt(length_J))
 
-G(c) = Tuple(Iterators.take(Iterators.partition(sha3_512(c), length_K), 2))
+G(c) = Tuple(take(partition(sha3_512(c), length_K), 2))
 
 const level_parameters = OrderedDict(
     :Level1 => (1, 2, (3, 2), (10, 4)), # ML-KEM-512

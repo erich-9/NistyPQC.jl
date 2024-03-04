@@ -14,6 +14,7 @@ for (level, base_parameters) ∈ level_parameters
     import ..Parameters: derived_parameters
 
     import ArgCheck: @argcheck
+    import Base.Iterators: partition
     import StaticArrays: MVector, StaticVector
 
     const (level_number, r, w, t, nb_iter, τ, _) = $base_parameters
@@ -40,7 +41,7 @@ for (level, base_parameters) ∈ level_parameters
         (h_seed, σ) = if seed !== nothing
             (seed.h, seed.σ)
         else
-            MVector{ℓ, UInt8}.(Iterators.partition(rand(rng, UInt8, 2ℓ), ℓ))
+            MVector{ℓ, UInt8}.(partition(rand(rng, UInt8, 2ℓ), ℓ))
         end
 
         (h₀, h₁) = D̂(h_seed)
@@ -76,7 +77,7 @@ for (level, base_parameters) ∈ level_parameters
         c₀ = Ring.Element(c[1:r_bytes])
         c₁ = c[(end - ℓ + 1):end]
 
-        (h₀, h₁) = map(Ring.Element, Iterators.partition(dk[1:(2r_bytes)], r_bytes))
+        (h₀, h₁) = map(Ring.Element, partition(dk[1:(2r_bytes)], r_bytes))
         σ = dk[(end - ℓ + 1):end]
 
         ẽ = decode(c₀ * h₀, h₀, h₁)

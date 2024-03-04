@@ -54,13 +54,13 @@ end
 end
 
 @testset "MLKEM.ntt" begin
-    import .MLKEM.NumberTheory: R_q, T_q, ntt, ntt⁻¹
+    import .MLKEM.NumberTheory: Rq, Tq, ntt, ntt⁻¹
 
-    f = R_q(mod.(rand(Int, n), q))
+    f = Rq(mod.(rand(Int, n), q))
     g = ntt⁻¹(ntt(f))
     @test f == g
 
-    f̂ = T_q(mod.(rand(Int, n), q))
+    f̂ = Tq(mod.(rand(Int, n), q))
     ĝ = ntt(ntt⁻¹(f̂))
     @test f̂ == ĝ
 end

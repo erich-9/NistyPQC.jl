@@ -2,7 +2,7 @@ module Sampling
 
 import ..Parameters: n, n₁, q, β, ξ
 import ..General: bytes2bits
-import ..NumberTheory: R_q, T_q
+import ..NumberTheory: Rq, Tq
 
 function sample_ntt(B)
     # @assert Base.IteratorSize(B) == Base.IsInfinite()
@@ -10,10 +10,9 @@ function sample_ntt(B)
     â = Vector{Int}(undef, n)
 
     j = 1
+    B3 = Iterators.partition(B, 3)
     while j ≤ n
-        b₁, B = Iterators.peel(B)
-        b₂, B = Iterators.peel(B)
-        b₃, B = Iterators.peel(B)
+        (b₁, b₂, b₃), B3 = Iterators.peel(B3)
 
         d₁ = b₁ + β * (b₂ % ξ)
         d₂ = b₂ ÷ ξ + ξ * b₃
@@ -28,7 +27,7 @@ function sample_ntt(B)
         end
     end
 
-    T_q(â)
+    Tq(â)
 end
 
 function sample_polycbd(B)
@@ -45,7 +44,7 @@ function sample_polycbd(B)
         f[i + 1] = mod(x - y, q)
     end
 
-    R_q(f)
+    Rq(f)
 end
 
 end # module
