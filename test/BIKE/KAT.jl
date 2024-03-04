@@ -25,6 +25,8 @@ kats = KAT.register_files(
     ],
 )
 
+rng = NistyPQC.rng
+
 for kat ∈ kats
     @eval X = BIKE.$(kat.level)
 
@@ -48,3 +50,5 @@ for kat ∈ kats
         end
     end
 end
+
+NistyPQC.rng = rng
