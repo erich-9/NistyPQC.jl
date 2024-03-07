@@ -8,14 +8,14 @@ import .Parameters: level_parameters
 for (level, base_parameters) ∈ level_parameters
     @eval module $level
 
-    export PublicKey, SecretKey, generate_keys, sign_message, verify_signature
+    export generate_keys, sign_message, verify_signature
 
     import ...rng
     import ..Parameters: derived_parameters
     import ..General: bytes2int
 
+    import ArgCheck: @argcheck
     import Base.Iterators: partition
-    import StaticArrays: MVector, StaticVector
 
     const (level_number, variant, n, _...) = $base_parameters
     const (;
@@ -38,58 +38,55 @@ for (level, base_parameters) ∈ level_parameters
 
     import .Addressing: SecretAddress, PublicAddress, change_type_to_fors_tree!
 
-    struct PublicKey
-        seed::MVector{n, UInt8}
-        root::MVector{n, UInt8}
-    end
-
-    struct SecretKey
-        seed::MVector{n, UInt8}
-        prf::MVector{n, UInt8}
-        pk::PublicKey
-    end
-
     function generate_keys(;
         seed::Union{Nothing, @NamedTuple{sk::U, prf::V, pk::W}} = nothing,
     ) where {
-        U <: StaticVector{n, UInt8},
-        V <: StaticVector{n, UInt8},
-        W <: StaticVector{n, UInt8},
+        U <: AbstractVector{UInt8},
+        V <: AbstractVector{UInt8},
+        W <: AbstractVector{UInt8},
     }
         (sk_seed, sk_prf, pk_seed) = if seed !== nothing
+            @argcheck length(seed.sk) == n
+            @argcheck length(seed.prf) == n
+            @argcheck length(seed.pk) == n
             (seed.sk, seed.prf, seed.pk)
         else
-            MVector{n, UInt8}.(partition(rand(rng, UInt8, 3n), n))
+            partition(rand(rng, UInt8, 3n), n)
         end
 
-        pk = PublicKey(pk_seed, Hypertree.pk(sk_seed, pk_seed))
-        sk = SecretKey(sk_seed, sk_prf, pk)
+        pk = vcat(pk_seed, Hypertree.pk(sk_seed, pk_seed))
+        sk = vcat(sk_seed, sk_prf, pk)
 
         (; pk, sk)
     end
 
     function sign_message(
         msg::AbstractVector{UInt8},
-        sk::SecretKey;
-        randomize::Union{Bool, StaticVector{n, UInt8}} = true,
+        sk::AbstractVector{UInt8};
+        randomize::Union{Bool, AbstractVector{UInt8}} = true,
     )
-        opt_rand = if randomize isa StaticVector{n, UInt8}
+        @argcheck length(sk) == 4n
+        (sk_seed, sk_prf, pk_seed, pk_root) = partition(sk, n)
+
+        opt_rand = if randomize isa AbstractVector{UInt8}
+            @argcheck length(randomize) == n
             randomize
         elseif randomize === false
-            sk.pk.seed
+            pk_seed
         else
             rand(rng, UInt8, n)
         end
 
-        randomizer = hashers_msg.PRF(sk.prf, vcat(opt_rand, msg), n)
+        randomizer = hashers_msg.PRF(sk_prf, vcat(opt_rand, msg), n)
 
-        adrs = SecretAddress(sk.seed, sk.pk.seed)
-        (msg_digest, idx_tree, idx_leaf) = digest_message!(adrs, msg, randomizer, sk.pk)
+        adrs = SecretAddress(sk_seed, pk_seed)
+        (msg_digest, idx_tree, idx_leaf) =
+            digest_message!(adrs, msg, randomizer, pk_seed, pk_root)
 
         sig_fors = FORS.sign_message!(adrs, msg_digest)
         sig_tree = Hypertree.sign_message(
             FORS.pk_from_signature!(adrs, sig_fors, msg_digest),
-            (idx_tree, idx_leaf, sk.seed, sk.pk.seed)...,
+            (idx_tree, idx_leaf, sk_seed, pk_seed)...,
         )
 
         vcat(randomizer, sig_fors, sig_tree)
@@ -98,27 +95,31 @@ for (level, base_parameters) ∈ level_parameters
     function verify_signature(
         msg::AbstractVector{UInt8},
         sig::AbstractVector{UInt8},
-        pk::PublicKey,
+        pk::AbstractVector{UInt8},
     )
+        @argcheck length(pk) == 2n
+        (pk_seed, pk_root) = partition(pk, n)
+
         if length(sig) == σ
-            randomizer = sig[1:n]
-            sig_fors = sig[(n + 1):(n + parameters_fors.σ)]
+            randomizer = sig[begin:(begin + n - 1)]
+            sig_fors = sig[(begin + n):(begin + n + parameters_fors.σ - 1)]
             sig_tree = sig[(end - parameters_tree.σ + 1):end]
 
-            adrs = PublicAddress(pk.seed)
-            (msg_digest, idx_tree, idx_leaf) = digest_message!(adrs, msg, randomizer, pk)
+            adrs = PublicAddress(pk_seed)
+            (msg_digest, idx_tree, idx_leaf) =
+                digest_message!(adrs, msg, randomizer, pk_seed, pk_root)
 
-            pk.root == Hypertree.pk_from_signature(
+            pk_root == Hypertree.pk_from_signature(
                 FORS.pk_from_signature!(adrs, sig_fors, msg_digest),
-                (sig_tree, idx_tree, idx_leaf, pk.seed)...,
+                (sig_tree, idx_tree, idx_leaf, pk_seed)...,
             )
         else
             false
         end
     end
 
-    function digest_message!(adrs, msg, randomizer, pk)
-        hash = hashers_msg.H(vcat(randomizer, pk.seed), vcat(pk.root, msg), sum(m))
+    function digest_message!(adrs, msg, randomizer, pk_seed, pk_root)
+        hash = hashers_msg.H(vcat(randomizer, pk_seed), vcat(pk_root, msg), sum(m))
 
         msg_digest = hash[1:(m.msg_digest)]
         tmp_idx_tree = hash[(m.msg_digest + 1):(m.msg_digest + m.idx_tree)]

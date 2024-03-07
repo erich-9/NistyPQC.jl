@@ -18,7 +18,6 @@ for (level, base_parameters) ∈ level_parameters
     import ..General: byte_encode, byte_decode
 
     import ArgCheck: @argcheck
-    import StaticArrays: StaticVector
 
     const (level_number, k, (η₁, η₂), (dᵤ, dᵥ)) = $base_parameters
     const (; identifier, λ) = derived_parameters($level, $base_parameters)
@@ -49,7 +48,8 @@ for (level, base_parameters) ∈ level_parameters
         m::AbstractVector{UInt8} = rand(rng, UInt8, n₂),
     )
         @argcheck length(ek) == length_ek
-        @argcheck ek[1:λ] == byte_encode(dₘₐₓ, byte_decode(dₘₐₓ, ek[1:λ]))
+        @argcheck ek[begin:(begin + λ - 1)] ==
+                  byte_encode(dₘₐₓ, byte_decode(dₘₐₓ, ek[begin:(begin + λ - 1)]))
         @argcheck length(m) == n₂
 
         (K::Vector{UInt8}, r) = G([m; H(ek)])
@@ -62,8 +62,8 @@ for (level, base_parameters) ∈ level_parameters
         @argcheck length(c) == length_c
         @argcheck length(dk) == length_dk
 
-        dkₚₖₑ = dk[1:λ]
-        ekₚₖₑ = dk[(λ + 1):(2λ + length_K)]
+        dkₚₖₑ = dk[begin:(begin + λ - 1)]
+        ekₚₖₑ = dk[(begin + λ):(begin + 2λ + length_K - 1)]
         h = dk[(end - length_R - length_H + 1):(end - length_R)]
         z = dk[(end - length_R + 1):end]
 

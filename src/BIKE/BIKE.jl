@@ -15,7 +15,6 @@ for (level, base_parameters) ∈ level_parameters
 
     import ArgCheck: @argcheck
     import Base.Iterators: partition
-    import StaticArrays: MVector, StaticVector
 
     const (level_number, r, w, t, nb_iter, τ, _) = $base_parameters
     const (; identifier, r_bytes, d, θ, threshold) =
@@ -37,11 +36,14 @@ for (level, base_parameters) ∈ level_parameters
 
     function generate_keys(;
         seed::Union{Nothing, @NamedTuple{h::U, σ::V}} = nothing,
-    ) where {U <: StaticVector{ℓ, UInt8}, V <: StaticVector{ℓ, UInt8}}
+    ) where {U <: AbstractVector{UInt8}, V <: AbstractVector{UInt8}}
         (h_seed, σ) = if seed !== nothing
+            @argcheck length(seed.h) == ℓ
+            @argcheck length(seed.σ) == ℓ
+
             (seed.h, seed.σ)
         else
-            MVector{ℓ, UInt8}.(partition(rand(rng, UInt8, 2ℓ), ℓ))
+            Vector{UInt8}.(partition(rand(rng, UInt8, 2ℓ), ℓ))
         end
 
         (h₀, h₁) = D̂(h_seed)
@@ -74,10 +76,10 @@ for (level, base_parameters) ∈ level_parameters
         @argcheck length(c) == length_c
         @argcheck length(dk) == length_dk
 
-        c₀ = Ring.Element(c[1:r_bytes])
+        c₀ = Ring.Element(c[begin:(begin + r_bytes - 1)])
         c₁ = c[(end - ℓ + 1):end]
 
-        (h₀, h₁) = map(Ring.Element, partition(dk[1:(2r_bytes)], r_bytes))
+        (h₀, h₁) = map(Ring.Element, partition(dk[begin:(begin + 2r_bytes - 1)], r_bytes))
         σ = dk[(end - ℓ + 1):end]
 
         ẽ = decode(c₀ * h₀, h₀, h₁)

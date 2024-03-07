@@ -4,36 +4,32 @@ import ...General: int2bytes, int2bytes!
 import ..n, ..parameters_adrs
 
 import OrderedCollections: OrderedDict
-import StaticArrays: SUnitRange, MVector, SVector
 
 const (components, length_data, length_type) = begin
     x = OrderedDict()
     local start = 1
     for (length, names) ∈ parameters_adrs.layout
         for name ∈ names
-            x[name] = (; length, range = SUnitRange{start, length}())
+            x[name] = (; length, range = start:(start + length - 1))
         end
         start += length
     end
     (x, start - 1, x[:type].length)
 end
 
-const types = map(
-    SVector{length_type, UInt8},
-    map(x -> int2bytes(x, length_type), parameters_adrs.types),
-)
+const types = map(x -> int2bytes(x, length_type), parameters_adrs.types)
 
 abstract type Address end
 
 for (A, ks) ∈ [(:SecretAddress, [:sk_seed, :pk_seed]), (:PublicAddress, [:pk_seed])]
-    ks_lhs = :($([:($k::MVector{n, UInt8}) for k ∈ ks]))
+    ks_lhs = :($([:($k::Vector{UInt8}) for k ∈ ks]))
     ks_rhs = :($([:(adrs.$k) for k ∈ ks]))
 
     @eval begin
         struct $A <: Address
             $(ks_lhs...)
-            data::MVector{length_data, UInt8}
-            $A($(ks...)) = new($(ks...), zeros(MVector{length_data, UInt8}))
+            data::Vector{UInt8}
+            $A($(ks...)) = new($(ks...), zeros(UInt8, length_data))
             $A($(ks...), data) = new($(ks...), data)
         end
 

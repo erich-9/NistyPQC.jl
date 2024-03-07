@@ -26,7 +26,7 @@ function generate_keys(; d = rand(rng, UInt8, n₂))
 end
 
 function encrypt(ek, m, r)
-    t̂ = Tq.(split_equally(byte_decode(dₘₐₓ, ek[1:(end - length_K)]), k))
+    t̂ = Tq.(split_equally(byte_decode(dₘₐₓ, ek[begin:(end - length_K)]), k))
     ρ = ek[(end - length_K + 1):end]
 
     B̂ = [sample_ntt(XOF(ρ, j, i)) for i ∈ 0:(k - 1), j ∈ 0:(k - 1)]
@@ -45,7 +45,7 @@ function encrypt(ek, m, r)
 end
 
 function decrypt(dk, c)
-    c₁ = partition(c[1:(n₂ * dᵤ * k)], n₂ * dᵤ)
+    c₁ = partition(c[begin:(begin + n₂ * dᵤ * k - 1)], n₂ * dᵤ)
     c₂ = c[(end - n₂ * dᵥ + 1):end]
 
     u = Rq.(decompress.(dᵤ, byte_decode.(dᵤ, c₁)))

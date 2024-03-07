@@ -67,9 +67,7 @@ for level ∈ keys(level_parameters)
     end
 
     @testset "BIKE.$level" begin
-        import StaticArrays: SizedVector
-
-        z = SizedVector{X.ℓ, UInt8}(zeros(UInt8, X.ℓ))
+        z = zeros(UInt8, X.ℓ)
 
         (; ek, dk) = X.generate_keys(; seed = (; h = z, σ = z))
         (; K, c) = X.encapsulate_secret(ek)
