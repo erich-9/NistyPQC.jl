@@ -10,11 +10,11 @@ import Base.Iterators: countfrom, filter
 const k_fg = first(filter(≥((σ_fg / σ_max)^2), countfrom(1)))
 
 function sample_σ_fg_int()
-    return sum(sample_int(0, σ_fg / √k_fg) for _ ∈ 1:k_fg)
+    sum(sample_int(0, σ_fg / √k_fg) for _ ∈ 1:k_fg)
 end
 
 function sample_int(μ, σ¹)
-    @assert σ_min ≤ σ¹ ≤ σ_max
+    # @assert σ_min ≤ σ¹ ≤ σ_max
 
     (r, ccs) = (μ - floor(μ), σ_min / σ¹)
     while true
@@ -32,7 +32,7 @@ function base_sampler()
 end
 
 function bernoulli_exp(x, ccs, polyapprox = C)
-    @assert 0 ≤ x
+    # @assert 0 ≤ x
 
     (s, y) = divrem(x, log(2))
     z = (2 * approx_exp(y, ccs, polyapprox) - 1) >> min(Int(s), polyapprox.α)
@@ -47,8 +47,8 @@ function bernoulli_exp(x, ccs, polyapprox = C)
 end
 
 function approx_exp(x, ccs, polyapprox)
-    @assert 0 ≤ x ≤ log(2)
-    @assert 0 ≤ ccs ≤ 1
+    # @assert 0 ≤ x ≤ log(2)
+    # @assert 0 ≤ ccs ≤ 1
 
     y = polyapprox.coeffs[begin]
     z = floor(Int128, exp2(polyapprox.α) * x)

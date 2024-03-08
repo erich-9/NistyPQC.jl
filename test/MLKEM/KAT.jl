@@ -24,30 +24,26 @@ kats = KAT.register_files(
     ],
 )
 
-rng = NistyPQC.rng
-
 for kat ∈ kats
     @eval X = MLKEM.$(kat.level)
 
     @testset "MLKEM.$(kat.level): KAT.$(kat.id)" begin
         for t ∈ kat.file
-            NistyPQC.rng = NistDRBG.AES256CTR(t["seed"])
+            NistyPQC.with_rng(NistDRBG.AES256CTR(t["seed"])) do
+                (; ek, dk) = X.generate_keys()
+                @test ek == t["pk"]
+                @test dk == t["sk"]
 
-            (; ek, dk) = X.generate_keys()
-            @test ek == t["pk"]
-            @test dk == t["sk"]
+                (; K, c) = X.encapsulate_secret(t["pk"])
+                @test c == t["ct"]
+                @test K == t["ss"]
 
-            (; K, c) = X.encapsulate_secret(t["pk"])
-            @test c == t["ct"]
-            @test K == t["ss"]
+                K = X.decapsulate_secret(t["ct"], t["sk"])
+                @test K == t["ss"]
 
-            K = X.decapsulate_secret(t["ct"], t["sk"])
-            @test K == t["ss"]
-
-            K = X.decapsulate_secret(t["ct_n"], t["sk"])
-            @test K == t["ss_n"]
+                K = X.decapsulate_secret(t["ct_n"], t["sk"])
+                @test K == t["ss_n"]
+            end
         end
     end
 end
-
-NistyPQC.rng = rng

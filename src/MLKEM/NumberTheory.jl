@@ -1,8 +1,8 @@
 module NumberTheory
 
-import ..Parameters: ω, n, n₀, q, ζ, n₀⁻¹
+import ..Parameters: lg_n, n, n₀, q, ζ, n₀⁻¹
 
-bitrev(i) = parse(Int, reverse(bitstring(i))[1:(ω - 1)], base = 2)
+bitrev(i) = parse(Int, reverse(bitstring(i))[1:(lg_n - 1)], base = 2)
 
 const ζ_bitrev = [powermod(ζ, bitrev(i), q) for i ∈ 1:(n₀ - 1)]
 const ζ_2bitrevp = [powermod(ζ, 2bitrev(i) + 1, q) for i ∈ 0:(n₀ - 1)]
@@ -46,9 +46,8 @@ for F ∈ [:Rq, :Tq]
 end
 
 function Base.:(*)(f̂::Tq, ĝ::Tq)
-    # @assert length(f̂) == length(ĝ) == n
-
     ĥ = Vector{Int}(undef, n)
+
     @inbounds for i ∈ 1:n₀
         (ĥ[2i - 1], ĥ[2i]) =
             basecase_multiply(f̂[2i - 1], f̂[2i], ĝ[2i - 1], ĝ[2i], ζ_2bitrevp[i])
@@ -62,8 +61,6 @@ function basecase_multiply(a₀, a₁, b₀, b₁, γ)
 end
 
 function ntt(f::Rq)
-    # @assert length(f) == n
-
     f̂ = copy(f.data)
 
     i = 1
@@ -85,8 +82,6 @@ function ntt(f::Rq)
 end
 
 function ntt⁻¹(f̂::Tq)
-    # @assert length(f̂) == n
-
     f = copy(f̂.data)
 
     i = n₀ - 1

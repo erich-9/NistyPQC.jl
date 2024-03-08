@@ -20,7 +20,7 @@ function w(σ::Real, θ::Integer, lg_Q_bs::Integer)
             end
             w += 1
         end
-        w
+        return w
     end
 end
 
@@ -34,7 +34,7 @@ function rcdt(σ::Real, θ::Integer, w::Integer, IntType::Type{<:Integer} = Int1
         for z ∈ (w - 1):-1:1
             rcdt[z] = rcdt[z + 1] + floor(IntType, big(2)^θ * D_w(σ, z))
         end
-        rcdt
+        return rcdt
     end
 end
 

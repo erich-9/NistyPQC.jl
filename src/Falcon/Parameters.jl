@@ -49,7 +49,14 @@ function derived_parameters(level, base_parameters)
     β = τ_sig * σ√(2n)
     β² = floor(Int, β^2)
 
-    (; identifier = "Falcon-$n", n, σ_fg, σ, σ_min, β²)
+    bitlengths = (; fg = min(8, 10 - lg_n ÷ 2), FG = 8, h = Base.top_set_bit(q))
+
+    length_pk = cld(n * bitlengths.h + 8, 8)
+    length_sk = cld(n * (2bitlengths.fg + bitlengths.FG) + 8, 8)
+
+    lengths = (; sk = length_sk, pk = length_pk, sig = length_sig, salt = length_salt)
+
+    (; identifier = "Falcon-$n", n, σ_fg, σ, σ_min, β², bitlengths, lengths)
 end
 
 end # module

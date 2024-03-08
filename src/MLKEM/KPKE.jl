@@ -1,7 +1,7 @@
 module KPKE
 
 import ....Utilities: split_equally
-import ...Parameters: n₂, dₘₐₓ, length_K, PRF, XOF, G
+import ...Parameters: n₂, dₘₐₓ, lengths, PRF, XOF, G
 import ...General: compress, decompress, byte_encode, byte_decode
 import ...NumberTheory: Rq, Tq, ntt, ntt⁻¹
 import ...Sampling: sample_ntt, sample_polycbd
@@ -26,8 +26,8 @@ function generate_keys(; d = rand(rng, UInt8, n₂))
 end
 
 function encrypt(ek, m, r)
-    t̂ = Tq.(split_equally(byte_decode(dₘₐₓ, ek[begin:(end - length_K)]), k))
-    ρ = ek[(end - length_K + 1):end]
+    t̂ = Tq.(split_equally(byte_decode(dₘₐₓ, ek[begin:(end - lengths.K)]), k))
+    ρ = ek[(end - lengths.K + 1):end]
 
     B̂ = [sample_ntt(XOF(ρ, j, i)) for i ∈ 0:(k - 1), j ∈ 0:(k - 1)]
     r̂ = ntt.([sample_polycbd(PRF(η₁, r, i + 0k)) for i ∈ 0:(k - 1)])

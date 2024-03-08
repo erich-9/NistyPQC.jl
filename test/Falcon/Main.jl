@@ -1,8 +1,7 @@
 import .Falcon.Parameters: level_parameters
+import .Falcon.Parameters: q, length_salt, τ_sig, sqrt_e_div_2, rcdt
 
 @testset "Falcon.Parameters" begin
-    import .Falcon.Parameters: q, length_salt, τ_sig, sqrt_e_div_2, rcdt
-
     @test q == 12_289
     @test length_salt == 40
     @test τ_sig ≈ 1.1
@@ -51,6 +50,7 @@ for level ∈ keys(level_parameters)
 
     FR = X.Fourier.Rings
     FT = X.Fourier.Transforms
+    EC = X.Encoding
 
     @testset "Falcon.$level.dft.F0" begin
         R = FR.F0{Float64}
@@ -88,14 +88,23 @@ for level ∈ keys(level_parameters)
         @test X.NTRU.polymul(f, G) - X.NTRU.polymul(F, g) == [X.q; zeros(Int, X.n - 1)]
     end
 
+    @testset "Falcon.$level.Encoding" begin
+        b = BitVector(repeat([0, 0, 0, 0, 0, 0, 0, 0, 1], X.n))
+        s = [EC.headerbyte([0, 0, 1, 1]); zeros(UInt8, X.lengths.sig - 1)]
+
+        @test EC.compress(-100:100, 100) === nothing
+        @test EC.decompress(b) !== nothing
+        @test EC.decompress([b; true]) === nothing
+    end
+
     @testset "Falcon.$level" begin
         msg = rand(UInt8, 10_000)
 
-        (pk, sk) = X.generate_keys()
+        (; sk, pk) = X.generate_keys()
 
         sig = X.sign_message(msg, sk)
 
-        @test X.length(sig) == X.length_sig
+        @test length(sig) == X.lengths.sig
         @test X.verify_signature(msg, sig, pk)
         @test !X.verify_signature(msg, sig[10:end], pk)
         @test !X.verify_signature(msg, map(isqrt, sig), pk)

@@ -1,4 +1,3 @@
-import .BIKE
 import .BIKE.Parameters: level_parameters, ℓ
 
 for level ∈ keys(level_parameters)

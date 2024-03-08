@@ -18,7 +18,7 @@ function hash_to_point(bytes::AbstractVector{UInt8})
             i += 1
         end
     end
-    res
+    return res
 end
 
 end # module

@@ -11,13 +11,13 @@ for (level, base_parameters) ∈ level_parameters
     export generate_keys, sign_message, verify_signature
 
     import ...rng
-    import ..Parameters: q, σ_max, length_salt, derived_parameters
+    import ..Parameters: q, σ_max, derived_parameters
     import ..General: euclidnorm_sqr
 
     import ArgCheck: @argcheck
 
-    const (level_number, lg_λ, lg_n, length_sig) = $base_parameters
-    const (; identifier, n, σ_fg, σ, σ_min, β²) =
+    const (level_number, lg_λ, lg_n, _) = $base_parameters
+    const (; identifier, n, σ_fg, σ, σ_min, β², bitlengths, lengths) =
         derived_parameters($level, $base_parameters)
 
     include("Sampling.jl")
@@ -50,7 +50,6 @@ for (level, base_parameters) ∈ level_parameters
 
         function SecretKey(f, g, F)
             (f̂, ĝ, F̂) = (dft(Fq{Int}.(x)) for x ∈ (f, g, F))
-
             SecretKey(f, g, F, (x -> convert(Int, x)).(dft⁻¹(ĝ .* F̂ ./ f̂)))
         end
     end
@@ -69,15 +68,15 @@ for (level, base_parameters) ∈ level_parameters
         pk = Encoding.encode(PublicKey(dft⁻¹(ĝ ./ f̂)))
         sk = Encoding.encode(SecretKey(f, g, F, G))
 
-        (; pk, sk)
+        (; sk, pk)
     end
 
     function sign_message(
         msg::AbstractVector{UInt8},
         sk::AbstractVector{UInt8};
-        salt::AbstractVector{UInt8} = rand(rng, UInt8, length_salt),
+        salt::AbstractVector{UInt8} = rand(rng, UInt8, lengths.salt),
     )
-        @argcheck length(salt) == length_salt
+        @argcheck length(salt) == lengths.salt
 
         (f₊, g₊, F₊, G₊, root) = let sk = Encoding.decode(SecretKey, sk)
             (getproperty(sk, p) for p ∈ [:f₊, :g₊, :F₊, :G₊, :root])
@@ -97,10 +96,8 @@ for (level, base_parameters) ∈ level_parameters
                 sig = Encoding.maybe_encode(
                     Signature(salt, (x -> convert(Int, x)).(dft⁻¹(ŝ₂))),
                 )
-
-                if sig !== nothing
-                    return sig
-                end
+                sig === nothing && continue
+                return sig
             end
         end
     end
@@ -113,21 +110,14 @@ for (level, base_parameters) ∈ level_parameters
         h = Encoding.decode(PublicKey, pk).h
 
         (salt, s₂) = let sig = Encoding.maybe_decode(Signature, sig)
-            if sig === nothing
-                return false
-            end
-
+            sig === nothing && return false
             (getproperty(sig, p) for p ∈ [:salt, :s₂])
         end
 
-        if s₂ !== nothing
-            c = Hashing.hash_to_point([salt; msg])
-            s₁ = (x -> convert(Int, x)).(Fq{Int}.(c) .- dft⁻¹(dft(Fq{Int}.(s₂)) .* dft(h)))
+        c = Hashing.hash_to_point([salt; msg])
+        s₁ = (x -> convert(Int, x)).(Fq{Int}.(c) .- dft⁻¹(dft(Fq{Int}.(s₂)) .* dft(h)))
 
-            euclidnorm_sqr([s₁, s₂]) ≤ β²
-        else
-            false
-        end
+        euclidnorm_sqr([s₁, s₂]) ≤ β²
     end
 
     end # module

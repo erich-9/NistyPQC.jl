@@ -13,26 +13,23 @@ for (level, base_parameters) ∈ level_parameters
     export generate_keys, encapsulate_secret, decapsulate_secret
 
     import ...rng
-    import ..Parameters: n₂, dₘₐₓ, length_H, length_J, length_K, length_R, H, J, G
+    import ...Utilities: peel
+    import ..Parameters: n₂, dₘₐₓ, H, J, G
     import ..Parameters: derived_parameters
     import ..General: byte_encode, byte_decode
 
     import ArgCheck: @argcheck
 
     const (level_number, k, (η₁, η₂), (dᵤ, dᵥ)) = $base_parameters
-    const (; identifier, λ) = derived_parameters($level, $base_parameters)
-
-    const length_ek = λ + length_K
-    const length_dk = λ + length_ek + length_H + length_R
-    const length_c = n₂ * (dᵤ * k + dᵥ)
+    const (; identifier, λ, lengths) = derived_parameters($level, $base_parameters)
 
     include("KPKE.jl")
 
     function generate_keys(;
-        z::AbstractVector{UInt8} = rand(rng, UInt8, length_R),
+        z::AbstractVector{UInt8} = rand(rng, UInt8, lengths.R),
         d::AbstractVector{UInt8} = rand(rng, UInt8, n₂),
     )
-        @argcheck length(z) == length_R
+        @argcheck length(z) == lengths.R
         @argcheck length(d) == n₂
 
         (ekₚₖₑ, dkₚₖₑ) = KPKE.generate_keys(d = d)
@@ -47,9 +44,8 @@ for (level, base_parameters) ∈ level_parameters
         ek::AbstractVector{UInt8};
         m::AbstractVector{UInt8} = rand(rng, UInt8, n₂),
     )
-        @argcheck length(ek) == length_ek
-        @argcheck ek[begin:(begin + λ - 1)] ==
-                  byte_encode(dₘₐₓ, byte_decode(dₘₐₓ, ek[begin:(begin + λ - 1)]))
+        @argcheck length(ek) == lengths.ek
+        @argcheck first(ek, λ) == byte_encode(dₘₐₓ, byte_decode(dₘₐₓ, first(ek, λ)))
         @argcheck length(m) == n₂
 
         (K::Vector{UInt8}, r) = G([m; H(ek)])
@@ -59,13 +55,10 @@ for (level, base_parameters) ∈ level_parameters
     end
 
     function decapsulate_secret(c::AbstractVector{UInt8}, dk::AbstractVector{UInt8})
-        @argcheck length(c) == length_c
-        @argcheck length(dk) == length_dk
+        @argcheck length(c) == lengths.c
+        @argcheck length(dk) == lengths.dk
 
-        dkₚₖₑ = dk[begin:(begin + λ - 1)]
-        ekₚₖₑ = dk[(begin + λ):(begin + 2λ + length_K - 1)]
-        h = dk[(end - length_R - length_H + 1):(end - length_R)]
-        z = dk[(end - length_R + 1):end]
+        (dkₚₖₑ, ekₚₖₑ, h, z) = peel(dk, [λ, λ + lengths.K, lengths.H, lengths.R])
 
         m̃ = KPKE.decrypt(dkₚₖₑ, c)
         (K̃::Vector{UInt8}, r̃) = G([m̃; h])

@@ -6,17 +6,18 @@ import Primes: isprime
 import SHA: sha3_256, sha3_512
 import SHAKE: shake256, shake128_xof
 
-const (ω, κ) = (8, 4)
+const (lg_n, κ) = (8, 4)
 
-# number of bytes to take from the hash function ...
-const length_H = 32 # ... in H once
-const length_J = 32 # ... in J once
-const length_K = 32 # ... in G twice
+const lengths = (;
+    # number of bytes to take from the hash function ...
+    H = 32, # ... in H once
+    J = 32, # ... in J once
+    K = 32, # ... in G twice
+    # number of random bytes for implicit rejection
+    R = 32,
+)
 
-# number of random bytes for implicit rejection
-const length_R = 32
-
-const n = 1 << ω # = 256
+const n = 1 << lg_n # = 256
 const n₀ = n >> 1 # = 128
 const n₁ = n >> 2 # = 64
 const n₂ = n >> 3 # = 32
@@ -33,10 +34,10 @@ const ξ = (1 << dₘₐₓ) ÷ β # = 16
 PRF(η, s, b) = shake256([s; UInt8(b)], UInt(n₁ * η))
 XOF(ρ, i, j) = shake128_xof([ρ; UInt8(i); UInt8(j)])
 
-H(s) = sha3_256(s)[1:length_H]
-J(s) = shake256(s, UInt(length_J))
+H(s) = sha3_256(s)[1:(lengths.H)]
+J(s) = shake256(s, UInt(lengths.J))
 
-G(c) = Tuple(take(partition(sha3_512(c), length_K), 2))
+G(c) = Tuple(take(partition(sha3_512(c), lengths.K), 2))
 
 const level_parameters = OrderedDict(
     :Level1 => (1, 2, (3, 2), (10, 4)), # ML-KEM-512
@@ -47,10 +48,15 @@ const level_parameters = OrderedDict(
 function derived_parameters(level, base_parameters)
     (level_number, k, (η₁, η₂), (dᵤ, dᵥ)) = base_parameters
 
-    (;
-        identifier = "ML-KEM-$(k * n)",
-        λ = n₂ * dₘₐₓ * k, # = 384k
-    )
+    λ = n₂ * dₘₐₓ * k # = 384k
+
+    length_ek = λ + lengths.K
+    length_dk = λ + length_ek + lengths.H + lengths.R
+    length_c = n₂ * (dᵤ * k + dᵥ)
+
+    level_lengths = (; lengths..., ek = length_ek, dk = length_dk, c = length_c)
+
+    (; identifier = "ML-KEM-$(k * n)", λ, lengths = level_lengths)
 end
 
 end # module

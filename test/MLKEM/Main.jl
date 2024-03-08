@@ -1,9 +1,10 @@
-import .MLKEM
 import .MLKEM.Parameters: level_parameters, n, n₂, q, dₘₐₓ
+import .MLKEM.General: bytes2bits, bits2bytes
+import .MLKEM.General: compress, decompress
+import .MLKEM.General: byte_encode, byte_decode
+import .MLKEM.NumberTheory: Rq, Tq, ntt, ntt⁻¹
 
 @testset "MLKEM.bits2bytes" begin
-    import .MLKEM.General: bytes2bits, bits2bytes
-
     l = rand(0:10_000)
 
     b = BitVector(rand(Bool, l << 3))
@@ -16,8 +17,6 @@ import .MLKEM.Parameters: level_parameters, n, n₂, q, dₘₐₓ
 end
 
 @testset "MLKEM.compress" begin
-    import .MLKEM.General: compress, decompress
-
     mod⁺⁻(x, m) = mod(x, (-(m + 1) ÷ 2 + 1):(m ÷ 2))
 
     for x ∈ 1:q
@@ -37,8 +36,6 @@ end
 end
 
 @testset "MLKEM.byte_encode" begin
-    import .MLKEM.General: byte_encode, byte_decode
-
     for d ∈ 1:dₘₐₓ
         m = d < dₘₐₓ ? 1 << d : q
         F = mod.(rand(Int, n), m)
@@ -54,8 +51,6 @@ end
 end
 
 @testset "MLKEM.ntt" begin
-    import .MLKEM.NumberTheory: Rq, Tq, ntt, ntt⁻¹
-
     f = Rq(mod.(rand(Int, n), q))
     g = ntt⁻¹(ntt(f))
     @test f == g

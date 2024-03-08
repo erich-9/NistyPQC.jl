@@ -24,30 +24,26 @@ kats = KAT.register_files(
     ],
 )
 
-rng = NistyPQC.rng
-
 for kat ∈ kats
     @eval X = BIKE.$(kat.level)
 
     @testset "BIKE.$(kat.level): KAT.$(kat.id)" begin
         for t ∈ kat.file
-            h_bytes = t["sk"][(4X.w + 1):(4X.w + 2X.r_bytes)]
-            σ = t["sk"][(end - X.ℓ + 1):end]
+            NistyPQC.with_rng(NistDRBG.AES256CTR(t["seed"])) do
+                h_bytes = t["sk"][(4X.w + 1):(4X.w + 2X.r_bytes)]
+                σ = t["sk"][(end - X.ℓ + 1):end]
 
-            NistyPQC.rng = NistDRBG.AES256CTR(t["seed"])
+                (; ek, dk) = X.generate_keys()
+                @test ek == t["pk"]
+                @test dk == [h_bytes; σ]
 
-            (; ek, dk) = X.generate_keys()
-            @test ek == t["pk"]
-            @test dk == [h_bytes; σ]
+                (; K, c) = X.encapsulate_secret(t["pk"])
+                @test c == t["ct"]
+                @test K == t["ss"]
 
-            (; K, c) = X.encapsulate_secret(t["pk"])
-            @test c == t["ct"]
-            @test K == t["ss"]
-
-            K = X.decapsulate_secret(t["ct"], dk)
-            @test K == t["ss"]
+                K = X.decapsulate_secret(t["ct"], dk)
+                @test K == t["ss"]
+            end
         end
     end
 end
-
-NistyPQC.rng = rng

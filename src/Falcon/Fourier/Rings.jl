@@ -18,9 +18,6 @@ for F ∈ [:F0, :Fq]
 
         Base.zero(::Type{$F{T}}) where {T} = $F{T}(zero(T))
         Base.zero(::$F{T}) where {T} = zero($F{T})
-
-        Base.one(::Type{$F{T}}) where {T} = $F{T}(one(T))
-        Base.one(::$F{T}) where {T} = one($F{T})
     end
 end
 
@@ -70,7 +67,7 @@ function recompute_big_ζs()
         big_ζs[i] = ζ_curr
         ζ_curr *= ζ_init
     end
-    big_ζs
+    return big_ζs
 end
 
 for (F, Ts) ∈ [(:F0, [Float64, BigFloat]), (:Fq, [Int])]

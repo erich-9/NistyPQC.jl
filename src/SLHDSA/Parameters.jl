@@ -8,7 +8,7 @@ import SHAKE: shake256
 
 const level_parameters = OrderedDict(
     Symbol(level, :_, hash_family) => (parameters..., hash_family) for
-    hash_family ∈ [:sha2, :shake], (level, parameters) ∈ [
+    hash_family ∈ [:SHA2, :SHAKE], (level, parameters) ∈ [
         :Level1s => (1, "s", 16, 7, 9, (12, 14), 4), # SLH-DSA-*-128s
         :Level1f => (1, "f", 16, 22, 3, (6, 33), 4), # SLH-DSA-*-128f
         :Level3s => (3, "s", 24, 7, 9, (14, 17), 4), # SLH-DSA-*-192s
@@ -42,7 +42,7 @@ function get_address_parameters(hash_family)
             wots_prf = 5,
             fors_prf = 6,
         ),
-        layout = if hash_family == :sha2
+        layout = if hash_family == :SHA2
             [
                 (1, [:layer_address]),
                 (8, [:tree_address]),
@@ -82,7 +82,7 @@ function get_hashers(hash_family, level_number, n)
 
     mgf1_scrambler = sha -> (x, y, l) -> mgf1(sha, vcat(x, sha(vcat(x, y))), l)
 
-    if hash_family == :sha2
+    if hash_family == :SHA2
         if level_number == 1
             hashers_msg = (; PRF = hmac_sha256_tr, H = mgf1_scrambler(sha256))
             hashers = (; PRF = sha256_adrs_tr, H = sha256_adrs_tr)
@@ -134,11 +134,11 @@ function get_algorithm_parameters(n, d, h¹, a, k, lg_w, hashers)
             idx_tree = cld(π_tree.h, 8),
             idx_leaf = cld(π_xmss.h, 8),
         ),
-        σ = n + π_fors.σ + π_tree.σ,
         parameters_wots = π_wots,
         parameters_xmss = π_xmss,
         parameters_tree = π_tree,
         parameters_fors = π_fors,
+        lengths = (; sk = 4n, pk = 2n, sig = n + π_fors.σ + π_tree.σ),
     )
 end
 

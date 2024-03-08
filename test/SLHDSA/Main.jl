@@ -1,8 +1,7 @@
 import .SLHDSA.Parameters: level_parameters
+import .SLHDSA.General: base_2ᵇ
 
 @testset "SLHDSA.base_2ᵇ" begin
-    import .SLHDSA.General: base_2ᵇ
-
     f(b, xs) =
         sum(x * big(2)^(b * (i - 1)) for (i, x) ∈ enumerate(reverse(xs)); init = big(0))
 
@@ -84,11 +83,11 @@ for level ∈ keys(level_parameters)
     @testset "SLHDSA.$level (randomized)" begin
         msg = rand(UInt8, 10_000)
 
-        (pk, sk) = X.generate_keys()
+        (; sk, pk) = X.generate_keys()
 
         sig = X.sign_message(msg, sk)
 
-        @test X.length(sig) == X.σ
+        @test length(sig) == X.lengths.sig
         @test X.verify_signature(msg, sig, pk)
         @test !X.verify_signature(msg, sig[10:end], pk)
         @test !X.verify_signature(msg, map(isqrt, sig), pk)
@@ -98,7 +97,7 @@ for level ∈ keys(level_parameters)
         z = zeros(UInt8, X.n)
         msg = rand(UInt8, 10_000)
 
-        (pk, sk) = X.generate_keys(; seed = (; sk = z, prf = z, pk = z))
+        (; sk, pk) = X.generate_keys(; seed = (; sk = z, prf = z, pk = z))
 
         sig₁ = X.sign_message(msg, sk; randomize = false)
         sig₂ = X.sign_message(msg, sk; randomize = z)

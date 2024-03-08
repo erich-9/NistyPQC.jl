@@ -1,4 +1,4 @@
-import ..Utilities: KAT, NistDRBG
+import ..Utilities: KAT
 
 kats = KAT.register_files(
     KAT.NISTFormattedFile,
@@ -32,12 +32,12 @@ for kat ∈ kats
             # somewhat intricate manner. For sampling, the bytes are taken from AES256CTR,
             # fed into SHAKE256 whose output is then used to seed a ChaCha20-based PRNG.
 
-            length_smsig = NistyPQC.Utilities.bytes2int(t["sm"][begin:(begin + 1)], Int)
-            length_pad = X.length_sig - X.length_salt - length_smsig
+            length_smsig = NistyPQC.Utilities.bytes2int(t["sm"][begin:(begin + 1)])
+            length_pad = X.lengths.sig - X.lengths.salt - length_smsig
 
             header = 0x30 + UInt8(X.lg_n)
-            salt = t["sm"][(begin + 2):(begin + 2 + X.length_salt - 1)]
-            smsig = t["sm"][(begin + 2 + X.length_salt + t["mlen"]):end]
+            salt = t["sm"][(begin + 2):(begin + 2 + X.lengths.salt - 1)]
+            smsig = t["sm"][(begin + 2 + X.lengths.salt + t["mlen"]):end]
 
             if length_pad ≥ 0
                 sig₁ = [header; salt; smsig[(begin + 1):end]; zeros(UInt8, length_pad)]

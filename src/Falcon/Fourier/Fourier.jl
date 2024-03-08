@@ -7,7 +7,6 @@ include("Sampling.jl")
 
 import .Rings: F0, Fq, recompute_big_ζs
 import .Transforms: dft, dft⁻¹, merge, split, merge_dft, split_dft, gramdata
-import .Tree
 import .Sampling: sample_dft_pair
 
 end # module

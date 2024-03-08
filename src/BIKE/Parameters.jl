@@ -18,7 +18,9 @@ function derived_parameters(level, base_parameters)
     θ = (d + 1) ÷ 2
     threshold = (S, i) -> max(floor(Int, θ₀ * S + θ₁), θ)
 
-    (; identifier = "BIKE-Level$(level_number)", r_bytes, d, θ, threshold)
+    lengths = (; ek = r_bytes, dk = 2r_bytes + ℓ, K = ℓ, c = r_bytes + ℓ)
+
+    (; identifier = "BIKE-Level$(level_number)", r_bytes, d, θ, threshold, lengths)
 end
 
 end # module

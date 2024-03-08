@@ -11,7 +11,7 @@ function sample_ntt(B)
 
     j = 1
     B3 = Iterators.partition(B, 3)
-    while j ≤ n
+    @inbounds while j ≤ n
         (b₁, b₂, b₃), B3 = Iterators.peel(B3)
 
         d₁ = b₁ + β * (b₂ % ξ)
@@ -37,7 +37,7 @@ function sample_polycbd(B)
     b = bytes2bits(B)
 
     f = Vector{Int}(undef, n)
-    for i ∈ 0:(n - 1)
+    @inbounds for i ∈ 0:(n - 1)
         x = sum(b[2i * η + j] for j ∈ 1:η)
         y = sum(b[2i * η + η + j] for j ∈ 1:η)
 
