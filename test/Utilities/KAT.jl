@@ -51,14 +51,16 @@ function Base.iterate(::NISTFormattedFile, state)
                     else
                         y = Dict{String, Any}()
                     end
-                elseif occursin(r"^(?:[0-9a-fA-F]{2})+$", v)
-                    y[k] = hex2bytes(v)
-                else
+                end
+
+                if k ∈ ["count", "mlen", "smlen"]
                     try
                         y[k] = parse(Int, v)
                     catch ArgumentError
                         y[k] = v
                     end
+                elseif occursin(r"^(?:[0-9a-fA-F]{2})+$", v)
+                    y[k] = hex2bytes(v)
                 end
             end
 

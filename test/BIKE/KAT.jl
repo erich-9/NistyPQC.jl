@@ -4,8 +4,7 @@ kats = KAT.register_files(
     KAT.NISTFormattedFile,
     "BIKE_KAT",
     "KAT for BIKE (round 4)",
-    id ->
-        "https://github.com/awslabs/bike-kem/raw/a4e85f1308d18372f722b942391485411a612edf/tests/kats/$(id).kat",
+    id -> "https://raw.githubusercontent.com/erich-9/PQC-KAT/main/BIKE/$(id).kat",
     [
         (;
             id = "BIKE_L1",

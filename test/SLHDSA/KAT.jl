@@ -4,8 +4,7 @@ kats = KAT.register_files(
     KAT.NISTFormattedFile,
     "SLHDSA_KAT",
     "KAT for FIPS-205 (draft)",
-    id ->
-        "https://github.com/mjosaarinen/slh-dsa-py/raw/bc45ee539428aa708c342ed4ada4ef7da543b2e9/kat/$(id).rsp.1",
+    id -> "https://raw.githubusercontent.com/erich-9/PQC-KAT/main/SLHDSA/$(id).rsp.1",
     [
         (;
             id = "sphincs-sha2-128s-simple",

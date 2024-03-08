@@ -4,8 +4,7 @@ kats = KAT.register_files(
     KAT.NISTFormattedFile,
     "MLKEM_KAT",
     "KAT for FIPS-203 (draft)",
-    id ->
-        "https://github.com/post-quantum-cryptography/KAT/raw/2a60197f91701e68901e0c244c038f89f3165f82/MLKEM/kat_$(id).rsp",
+    id -> "https://raw.githubusercontent.com/erich-9/PQC-KAT/main/MLKEM/kat_$(id).rsp",
     [
         (;
             id = "MLKEM_512",
