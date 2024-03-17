@@ -61,6 +61,13 @@ for (category, base_parameters) ∈ category_parameters
 
     include("Encoding.jl")
 
+    """
+        generate_keys()
+
+    Return a tuple `(; sk, pk)` consisting of a secret key and the corresponding public key.
+    The length of `sk` will be $(lengths.sk) bytes and the length of `pk` $(lengths.pk)
+    bytes.
+    """
     function generate_keys()
         (f, g, F, G) = NTRU.generate()
         (f̂, ĝ) = (dft(Fq{Int}.(x)) for x ∈ (f, g))
@@ -71,6 +78,15 @@ for (category, base_parameters) ∈ category_parameters
         (; sk, pk)
     end
 
+    """
+        sign_message(msg, sk[; salt])
+
+    Return a signature `sig` computed from the message `msg` based on the secret key `sk`.
+    The message `msg` may consist of arbitrarily many bytes, whereas `sk` must be a valid
+    secret key of $(lengths.sk) bytes. The length of `sig` will be $(lengths.sig) bytes.
+
+    Optionally, a `salt` of $(lengths.salt) bytes used for hashing can be provided.
+    """
     function sign_message(
         msg::AbstractVector{UInt8},
         sk::AbstractVector{UInt8};
@@ -102,6 +118,13 @@ for (category, base_parameters) ∈ category_parameters
         end
     end
 
+    """
+        verify_signature(msg, sig, pk)
+
+    Check whether `sig` is a valid signature for `msg` under the public key `pk`. The
+    message `msg` and potential signature `sig` may consist of arbitrarily many bytes,
+    whereas `pk` must be a valid public key of $(lengths.pk) bytes.
+    """
     function verify_signature(
         msg::AbstractVector{UInt8},
         sig::AbstractVector{UInt8},

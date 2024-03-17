@@ -27,6 +27,15 @@ for (category, base_parameters) ∈ category_parameters
     include("Encoding.jl")
     include("Sampling.jl")
 
+    """
+        generate_keys([; ξ])
+
+    Return a tuple `(; sk, pk)` consisting of a secret key and the corresponding public key.
+    The length of `sk` will be $(lengths.sk) bytes and the length of `pk` $(lengths.pk)
+    bytes.
+
+    For a deterministic result, a seed `ξ` of $(lengths.ξ) bytes can be provided.
+    """
     function generate_keys(; ξ::AbstractVector{UInt8} = rand(rng, UInt8, lengths.ξ))
         @argcheck length(ξ) == lengths.ξ
 
@@ -44,6 +53,16 @@ for (category, base_parameters) ∈ category_parameters
         (; sk, pk)
     end
 
+    """
+        sign_message(msg, sk[; randomize])
+
+    Return a signature `sig` computed from the message `msg` based on the secret key `sk`.
+    The message `msg` may consist of arbitrarily many bytes, whereas `sk` must be a valid
+    secret key of $(lengths.sk) bytes. The length of `sig` will be $(lengths.sig) bytes.
+
+    For a deterministic result, the optional parameter `randomize` can be set to `false` or
+    to some given $(lengths.rnd) bytes.
+    """
     function sign_message(
         msg::AbstractVector{UInt8},
         sk::AbstractVector{UInt8};
@@ -92,6 +111,13 @@ for (category, base_parameters) ∈ category_parameters
         end
     end
 
+    """
+        verify_signature(msg, sig, pk)
+
+    Check whether `sig` is a valid signature for `msg` under the public key `pk`. The
+    message `msg` and potential signature `sig` may consist of arbitrarily many bytes,
+    whereas `pk` must be a valid public key of $(lengths.pk) bytes.
+    """
     function verify_signature(
         msg::AbstractVector{UInt8},
         sig::AbstractVector{UInt8},

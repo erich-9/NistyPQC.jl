@@ -48,7 +48,7 @@ function derived_parameters(category, base_parameters)
     category_lengths = (;
         lengths...,
         (; ϵ_t, δ_t, δ_s, δ_z)...,
-        (; c̃ = length_c̃, pk = length_pk, sk = length_sk, sig = length_sig)...,
+        (; c̃ = length_c̃, sk = length_sk, pk = length_pk, sig = length_sig)...,
     )
 
     (; identifier = "ML-DSA-$k$ℓ", γ₁, γ₂, β, lengths = category_lengths)

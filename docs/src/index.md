@@ -2,13 +2,6 @@
 
 *Nifty PQC promoted by NIST.*
 
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](LICENSE)
-[![Documentation (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://erich-9.github.io/NistyPQC.jl/stable)
-[![Documentation (dev)](https://img.shields.io/badge/docs-dev-blue.svg)](https://erich-9.github.io/NistyPQC.jl/dev)
-[![Build Status](https://github.com/erich-9/NistyPQC.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/erich-9/NistyPQC.jl/actions/workflows/CI.yml)
-[![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
-[![Coverage](https://codecov.io/github/erich-9/NistyPQC.jl/branch/main/graph/badge.svg)](https://codecov.io/github/erich-9/NistyPQC.jl)
-
 These are implementations in [Julia](https://julialang.org/) of various [post-quantum cryptography](https://en.wikipedia.org/wiki/Post-quantum_cryptography) (PQC) algorithms that were picked as (candidate) winners in the [Post-Quantum Cryptography Standardization Project](https://csrc.nist.gov/Projects/post-quantum-cryptography/post-quantum-cryptography-standardization) run by the [National Institute of Standards and Technology](https://www.nist.gov/) (NIST).
 They fall in two categories:
 
