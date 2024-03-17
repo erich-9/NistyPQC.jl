@@ -9,21 +9,21 @@ kats = KAT.register_files(
     [
         (;
             id = "512",
-            level = :Level1,
+            category = :Category1,
             hash = "dd75c946fdedef4ec46a2bee7e10c65c9126f1a839b9ced6921fd45f7354b5cd",
         ),
         (;
             id = "1024",
-            level = :Level5,
+            category = :Category5,
             hash = "036a0bf5260573cec44977284dfef756cd1143db9961b981bd1fb55828acb20d",
         ),
     ],
 )
 
 for kat ∈ kats
-    @eval X = Falcon.$(kat.level)
+    @eval X = Falcon.$(kat.category)
 
-    @testset "Falcon.$(kat.level): KAT.$(kat.id)" begin
+    @testset "Falcon.$(kat.category): KAT.$(kat.id)" begin
         for t ∈ kat.file
 
             # The specification is not sufficient to reproduce the KAT.

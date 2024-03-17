@@ -1,4 +1,4 @@
-import .Falcon.Parameters: level_parameters
+import .Falcon.Parameters: category_parameters
 import .Falcon.Parameters: q, length_salt, τ_sig, sqrt_e_div_2, rcdt
 
 @testset "Falcon.Parameters" begin
@@ -29,30 +29,30 @@ import .Falcon.Parameters: q, length_salt, τ_sig, sqrt_e_div_2, rcdt
     ]
 end
 
-@testset "Falcon.Level1.Parameters (level specific)" begin
-    X = Falcon.Level1
+@testset "Falcon.Category1.Parameters (category specific)" begin
+    X = Falcon.Category1
 
     @test isapprox(X.σ, 165.736_617_183, atol = 1e-9, rtol = 0)
     @test isapprox(X.σ_min, 1.277_833_697, atol = 1e-9, rtol = 0)
     @test X.β² == 34_034_726
 end
 
-@testset "Falcon.Level5.Parameters (level specific)" begin
-    X = Falcon.Level5
+@testset "Falcon.Category5.Parameters (category specific)" begin
+    X = Falcon.Category5
 
     @test isapprox(X.σ, 168.388_571_447, atol = 1e-9, rtol = 0)
     @test isapprox(X.σ_min, 1.298_280_334, atol = 1e-9, rtol = 0)
     @test X.β² == 70_265_242
 end
 
-for level ∈ keys(level_parameters)
-    @eval X = Falcon.$level
+for category ∈ keys(category_parameters)
+    @eval X = Falcon.$category
 
     FR = X.Fourier.Rings
     FT = X.Fourier.Transforms
     EC = X.Encoding
 
-    @testset "Falcon.$level.dft.F0" begin
+    @testset "Falcon.$category.dft.F0" begin
         R = FR.F0{Float64}
 
         f = R.(rand(ComplexF64, 2^rand(1:(X.lg_n))))
@@ -67,7 +67,7 @@ for level ∈ keys(level_parameters)
         @test all(FT.dft(FT.dft⁻¹(g)) .≈ g)
     end
 
-    @testset "Falcon.$level.dft.Fq" begin
+    @testset "Falcon.$category.dft.Fq" begin
         R = FR.Fq{Int}
 
         f = R.(rand(0:(X.q - 1), 2^rand(1:(X.lg_n))))
@@ -82,13 +82,13 @@ for level ∈ keys(level_parameters)
         @test FT.dft(FT.dft⁻¹(g)) == g
     end
 
-    @testset "Falcon.$level.NTRU.generate" begin
+    @testset "Falcon.$category.NTRU.generate" begin
         (f, g, F, G) = X.NTRU.generate()
 
         @test X.NTRU.polymul(f, G) - X.NTRU.polymul(F, g) == [X.q; zeros(Int, X.n - 1)]
     end
 
-    @testset "Falcon.$level.Encoding" begin
+    @testset "Falcon.$category.Encoding" begin
         b = BitVector(repeat([0, 0, 0, 0, 0, 0, 0, 0, 1], X.n))
         s = [EC.headerbyte([0, 0, 1, 1]); zeros(UInt8, X.lengths.sig - 1)]
 
@@ -97,7 +97,7 @@ for level ∈ keys(level_parameters)
         @test EC.decompress([b; true]) === nothing
     end
 
-    @testset "Falcon.$level" begin
+    @testset "Falcon.$category" begin
         msg = rand(UInt8, 10_000)
 
         (; sk, pk) = X.generate_keys()

@@ -1,4 +1,4 @@
-import .MLKEM.Parameters: level_parameters, n, n₂, q, dₘₐₓ
+import .MLKEM.Parameters: category_parameters, n, n₂, q, dₘₐₓ
 import .MLKEM.General: bytes2bits, bits2bytes
 import .MLKEM.General: compress, decompress
 import .MLKEM.General: byte_encode, byte_decode
@@ -60,10 +60,10 @@ end
     @test f̂ == ĝ
 end
 
-for level ∈ keys(level_parameters)
-    @eval X = MLKEM.$level
+for category ∈ keys(category_parameters)
+    @eval X = MLKEM.$category
 
-    @testset "MLKEM.$level.KPKE" begin
+    @testset "MLKEM.$category.KPKE" begin
         m = rand(UInt8, n₂)
         r = rand(UInt8, 32)
 
@@ -74,7 +74,7 @@ for level ∈ keys(level_parameters)
         @test m == m̃
     end
 
-    @testset "MLKEM.$level" begin
+    @testset "MLKEM.$category" begin
         (; ek, dk) = X.generate_keys()
         (; K, c) = X.encapsulate_secret(ek)
         K̃ = X.decapsulate_secret(c, dk)

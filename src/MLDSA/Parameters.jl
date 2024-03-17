@@ -22,16 +22,16 @@ H(x) = shake256_xof(x)
 H(x, len) = shake256(x, len)
 H₁₂₈(x) = shake128_xof(x)
 
-const level_parameters = OrderedDict(
-    :Level2 => (2, 16, (4, 4), 39, 2, 80, 44, 17), # ML-DSA-44
-    :Level3 => (3, 24, (6, 5), 49, 4, 55, 16, 19), # ML-DSA-65
-    :Level5 => (5, 32, (8, 7), 60, 2, 75, 16, 19), # ML-DSA-87
+const category_parameters = OrderedDict(
+    :Category2 => (2, 16, (4, 4), 39, 2, 80, 44, 17), # ML-DSA-44
+    :Category3 => (3, 24, (6, 5), 49, 4, 55, 16, 19), # ML-DSA-65
+    :Category5 => (5, 32, (8, 7), 60, 2, 75, 16, 19), # ML-DSA-87
 )
 
-const τ_max_cld_8 = cld(maximum(getindex.(values(level_parameters), 4)), 8) # = 8
+const τ_max_cld_8 = cld(maximum(getindex.(values(category_parameters), 4)), 8) # = 8
 
-function derived_parameters(level, base_parameters)
-    (level_number, λ, (k, ℓ), τ, η, ω, qm_div_2γ₂, lg_γ₁) = base_parameters
+function derived_parameters(category, base_parameters)
+    (category_number, λ, (k, ℓ), τ, η, ω, qm_div_2γ₂, lg_γ₁) = base_parameters
 
     γ₁ = 1 << lg_γ₁
     γ₂ = (q - 1) ÷ 2qm_div_2γ₂
@@ -45,13 +45,13 @@ function derived_parameters(level, base_parameters)
     length_sk = lengths.ρ_A + lengths.K + lengths.tr + n₂ * ((k + ℓ) * δ_s + k * δ_t)
     length_sig = length_c̃ + n₂ * ℓ * δ_z + (ω + k)
 
-    level_lengths = (;
+    category_lengths = (;
         lengths...,
         (; ϵ_t, δ_t, δ_s, δ_z)...,
         (; c̃ = length_c̃, pk = length_pk, sk = length_sk, sig = length_sig)...,
     )
 
-    (; identifier = "ML-DSA-$k$ℓ", γ₁, γ₂, β, lengths = level_lengths)
+    (; identifier = "ML-DSA-$k$ℓ", γ₁, γ₂, β, lengths = category_lengths)
 end
 
 end # module

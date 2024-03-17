@@ -39,14 +39,14 @@ J(s) = shake256(s, UInt(lengths.J))
 
 G(c) = Tuple(take(partition(sha3_512(c), lengths.K), 2))
 
-const level_parameters = OrderedDict(
-    :Level1 => (1, 2, (3, 2), (10, 4)), # ML-KEM-512
-    :Level3 => (3, 3, (2, 2), (10, 4)), # ML-KEM-768
-    :Level5 => (5, 4, (2, 2), (11, 5)), # ML-KEM-1024
+const category_parameters = OrderedDict(
+    :Category1 => (1, 2, (3, 2), (10, 4)), # ML-KEM-512
+    :Category3 => (3, 3, (2, 2), (10, 4)), # ML-KEM-768
+    :Category5 => (5, 4, (2, 2), (11, 5)), # ML-KEM-1024
 )
 
-function derived_parameters(level, base_parameters)
-    (level_number, k, (η₁, η₂), (dᵤ, dᵥ)) = base_parameters
+function derived_parameters(category, base_parameters)
+    (category_number, k, (η₁, η₂), (dᵤ, dᵥ)) = base_parameters
 
     λ = n₂ * dₘₐₓ * k # = 384k
 
@@ -54,9 +54,9 @@ function derived_parameters(level, base_parameters)
     length_dk = λ + length_ek + lengths.H + lengths.R
     length_c = n₂ * (dᵤ * k + dᵥ)
 
-    level_lengths = (; lengths..., ek = length_ek, dk = length_dk, c = length_c)
+    category_lengths = (; lengths..., ek = length_ek, dk = length_dk, c = length_c)
 
-    (; identifier = "ML-KEM-$(k * n)", λ, lengths = level_lengths)
+    (; identifier = "ML-KEM-$(k * n)", λ, lengths = category_lengths)
 end
 
 end # module

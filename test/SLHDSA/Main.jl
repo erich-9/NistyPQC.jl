@@ -1,4 +1,4 @@
-import .SLHDSA.Parameters: level_parameters
+import .SLHDSA.Parameters: category_parameters
 import .SLHDSA.General: base_2ᵇ
 
 @testset "SLHDSA.base_2ᵇ" begin
@@ -16,8 +16,8 @@ import .SLHDSA.General: base_2ᵇ
     @test f(8, bs) >> (8l - out_len * b) == f(b, cs)
 end
 
-for level ∈ keys(level_parameters)
-    @eval X = SLHDSA.$level
+for category ∈ keys(category_parameters)
+    @eval X = SLHDSA.$category
 
     sk_seed = rand(UInt8, X.n)
     pk_seed = rand(UInt8, X.n)
@@ -25,7 +25,7 @@ for level ∈ keys(level_parameters)
     sa = X.SecretAddress(sk_seed, pk_seed)
     pa = X.PublicAddress(pk_seed)
 
-    @testset "SLHDSA.$level.WOTS" begin
+    @testset "SLHDSA.$category.WOTS" begin
         msg = rand(UInt8, X.WOTS.π.μ)
 
         pk₁ = X.WOTS.pk!(sa)
@@ -37,7 +37,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "SLHDSA.$level.XMSS" begin
+    @testset "SLHDSA.$category.XMSS" begin
         msg = rand(UInt8, X.XMSS.π.μ)
         idx = rand(0:(X.XMSS.π.ν - 1))
 
@@ -50,7 +50,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "SLHDSA.$level.Hypertree" begin
+    @testset "SLHDSA.$category.Hypertree" begin
         msg = rand(UInt8, X.Hypertree.π.μ)
         idx_tree = rand(0:(X.Hypertree.π.ν - 1))
         idx_leaf = rand(0:(X.XMSS.π.ν - 1))
@@ -64,7 +64,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "SLHDSA.$level.FORS" begin
+    @testset "SLHDSA.$category.FORS" begin
         msg = rand(UInt8, X.FORS.π.μ)
         idx_tree = rand(0:(X.Hypertree.π.ν - 1))
         idx_leaf = rand(0:(X.XMSS.π.ν - 1))
@@ -80,7 +80,7 @@ for level ∈ keys(level_parameters)
         @test pk₁ == pk₂
     end
 
-    @testset "SLHDSA.$level (randomized)" begin
+    @testset "SLHDSA.$category (randomized)" begin
         msg = rand(UInt8, 10_000)
 
         (; sk, pk) = X.generate_keys()
@@ -93,7 +93,7 @@ for level ∈ keys(level_parameters)
         @test !X.verify_signature(msg, map(isqrt, sig), pk)
     end
 
-    @testset "SLHDSA.$level (not randomized)" begin
+    @testset "SLHDSA.$category (not randomized)" begin
         z = zeros(UInt8, X.n)
         msg = rand(UInt8, 10_000)
 

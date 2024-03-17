@@ -3,10 +3,10 @@ module SLHDSA
 include("Parameters.jl")
 include("General.jl")
 
-import .Parameters: level_parameters
+import .Parameters: category_parameters
 
-for (level, base_parameters) ∈ level_parameters
-    @eval module $level
+for (category, base_parameters) ∈ category_parameters
+    @eval module $category
 
     export generate_keys, sign_message, verify_signature
 
@@ -17,7 +17,7 @@ for (level, base_parameters) ∈ level_parameters
     import ArgCheck: @argcheck
     import Base.Iterators: partition
 
-    const (level_number, variant, n, _...) = $base_parameters
+    const (category_number, variant, n, _...) = $base_parameters
     const (;
         identifier,
         m,
@@ -28,7 +28,7 @@ for (level, base_parameters) ∈ level_parameters
         parameters_fors,
         hashers_msg,
         lengths,
-    ) = derived_parameters($level, $base_parameters)
+    ) = derived_parameters($category, $base_parameters)
 
     include("Addressing.jl")
     include("WOTS.jl")

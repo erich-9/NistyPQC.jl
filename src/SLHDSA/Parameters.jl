@@ -6,22 +6,22 @@ import OrderedCollections: OrderedDict
 import SHA: hmac_sha256, hmac_sha512, sha256, sha512
 import SHAKE: shake256
 
-const level_parameters = OrderedDict(
-    Symbol(level, :_, hash_family) => (parameters..., hash_family) for
-    hash_family ∈ [:SHA2, :SHAKE], (level, parameters) ∈ [
-        :Level1s => (1, "s", 16, 7, 9, (12, 14), 4), # SLH-DSA-*-128s
-        :Level1f => (1, "f", 16, 22, 3, (6, 33), 4), # SLH-DSA-*-128f
-        :Level3s => (3, "s", 24, 7, 9, (14, 17), 4), # SLH-DSA-*-192s
-        :Level3f => (3, "f", 24, 22, 3, (8, 33), 4), # SLH-DSA-*-192f
-        :Level5s => (5, "s", 32, 8, 8, (14, 22), 4), # SLH-DSA-*-256s
-        :Level5f => (5, "f", 32, 17, 4, (9, 35), 4), # SLH-DSA-*-256f
+const category_parameters = OrderedDict(
+    Symbol(category, :_, hash_family) => (parameters..., hash_family) for
+    hash_family ∈ [:SHA2, :SHAKE], (category, parameters) ∈ [
+        :Category1s => (1, "s", 16, 7, 9, (12, 14), 4), # SLH-DSA-*-128s
+        :Category1f => (1, "f", 16, 22, 3, (6, 33), 4), # SLH-DSA-*-128f
+        :Category3s => (3, "s", 24, 7, 9, (14, 17), 4), # SLH-DSA-*-192s
+        :Category3f => (3, "f", 24, 22, 3, (8, 33), 4), # SLH-DSA-*-192f
+        :Category5s => (5, "s", 32, 8, 8, (14, 22), 4), # SLH-DSA-*-256s
+        :Category5f => (5, "f", 32, 17, 4, (9, 35), 4), # SLH-DSA-*-256f
     ]
 )
 
-function derived_parameters(level, base_parameters)
-    (level_number, variant, n, d, h¹, (a, k), lg_w, hash_family) = base_parameters
+function derived_parameters(category, base_parameters)
+    (category_number, variant, n, d, h¹, (a, k), lg_w, hash_family) = base_parameters
 
-    (; hashers_msg, hashers) = get_hashers(hash_family, level_number, n)
+    (; hashers_msg, hashers) = get_hashers(hash_family, category_number, n)
 
     (;
         hashers_msg,
@@ -64,7 +64,7 @@ function get_address_parameters(hash_family)
     )
 end
 
-function get_hashers(hash_family, level_number, n)
+function get_hashers(hash_family, category_number, n)
     shake_vcat = (x, y, l) -> shake256(vcat(x, y), l)
     shake_adrs = (adrs, x, l) -> shake256(vcat(adrs.pk_seed, adrs.data, x), l)
 
@@ -83,7 +83,7 @@ function get_hashers(hash_family, level_number, n)
     mgf1_scrambler = sha -> (x, y, l) -> mgf1(sha, vcat(x, sha(vcat(x, y))), l)
 
     if hash_family == :SHA2
-        if level_number == 1
+        if category_number == 1
             hashers_msg = (; PRF = hmac_sha256_tr, H = mgf1_scrambler(sha256))
             hashers = (; PRF = sha256_adrs_tr, H = sha256_adrs_tr)
         else

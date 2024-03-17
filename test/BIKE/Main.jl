@@ -1,11 +1,11 @@
-import .BIKE.Parameters: level_parameters, ℓ
+import .BIKE.Parameters: category_parameters, ℓ
 
-for level ∈ keys(level_parameters)
-    @eval X = BIKE.$level
+for category ∈ keys(category_parameters)
+    @eval X = BIKE.$category
 
     R = X.Ring
 
-    @testset "BIKE.$level.Ring.to_bits" begin
+    @testset "BIKE.$category.Ring.to_bits" begin
         coeffs₁ = rand(Bool, X.r)
         coeffs₂ = R.to_bits(R.Element(coeffs₁))
         @test coeffs₁ == coeffs₂
@@ -15,7 +15,7 @@ for level ∈ keys(level_parameters)
         @test f₁ == f₂
     end
 
-    @testset "BIKE.$level.Ring.to_bytes" begin
+    @testset "BIKE.$category.Ring.to_bytes" begin
         coeffs₁ = rand(UInt8, X.r_bytes)
         coeffs₁[end] >>= 8X.r_bytes - X.r
         coeffs₂ = R.to_bytes(R.Element(coeffs₁))
@@ -26,7 +26,7 @@ for level ∈ keys(level_parameters)
         @test f₁ == f₂
     end
 
-    @testset "BIKE.$level.Ring" begin
+    @testset "BIKE.$category.Ring" begin
         f₁ = rand(R.Element)
         f₂ = rand(R.Element)
         f₃ = rand(R.Element)
@@ -47,7 +47,7 @@ for level ∈ keys(level_parameters)
         @test f₁^-1 * f₁ == one(f₁)
     end
 
-    @testset "BIKE.$level.Sampling" begin
+    @testset "BIKE.$category.Sampling" begin
         seed = rand(UInt8, ℓ)
 
         D = X.Sampling.D̂(seed)
@@ -57,7 +57,7 @@ for level ∈ keys(level_parameters)
         @test sum(R.weight.(H)) == X.t
     end
 
-    @testset "BIKE.$level.Hashing" begin
+    @testset "BIKE.$category.Hashing" begin
         K = X.Hashing.K̂(rand(UInt8, ℓ), rand(UInt8, X.r_bytes + ℓ))
         L = X.Hashing.L̂(rand(R.Element), rand(R.Element))
 
@@ -65,7 +65,7 @@ for level ∈ keys(level_parameters)
         @test length(L) == ℓ
     end
 
-    @testset "BIKE.$level" begin
+    @testset "BIKE.$category" begin
         z = zeros(UInt8, X.ℓ)
 
         (; ek, dk) = X.generate_keys(; seed = (; h = z, σ = z))

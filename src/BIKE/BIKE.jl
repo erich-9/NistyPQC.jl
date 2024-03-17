@@ -2,10 +2,10 @@ module BIKE
 
 include("Parameters.jl")
 
-import .Parameters: level_parameters
+import .Parameters: category_parameters
 
-for (level, base_parameters) ∈ level_parameters
-    @eval module $level
+for (category, base_parameters) ∈ category_parameters
+    @eval module $category
 
     export generate_keys, encapsulate_secret, decapsulate_secret
 
@@ -16,9 +16,9 @@ for (level, base_parameters) ∈ level_parameters
 
     import ArgCheck: @argcheck
 
-    const (level_number, r, w, t, nb_iter, τ, _) = $base_parameters
+    const (category_number, r, w, t, nb_iter, τ, _) = $base_parameters
     const (; identifier, r_bytes, d, θ, threshold, lengths) =
-        derived_parameters($level, $base_parameters)
+        derived_parameters($category, $base_parameters)
 
     include("Ring.jl")
     include("Sampling.jl")

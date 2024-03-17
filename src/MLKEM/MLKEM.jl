@@ -5,10 +5,10 @@ include("General.jl")
 include("NumberTheory.jl")
 include("Sampling.jl")
 
-import .Parameters: level_parameters
+import .Parameters: category_parameters
 
-for (level, base_parameters) ∈ level_parameters
-    @eval module $level
+for (category, base_parameters) ∈ category_parameters
+    @eval module $category
 
     export generate_keys, encapsulate_secret, decapsulate_secret
 
@@ -20,8 +20,8 @@ for (level, base_parameters) ∈ level_parameters
 
     import ArgCheck: @argcheck
 
-    const (level_number, k, (η₁, η₂), (dᵤ, dᵥ)) = $base_parameters
-    const (; identifier, λ, lengths) = derived_parameters($level, $base_parameters)
+    const (category_number, k, (η₁, η₂), (dᵤ, dᵥ)) = $base_parameters
+    const (; identifier, λ, lengths) = derived_parameters($category, $base_parameters)
 
     include("KPKE.jl")
 

@@ -8,26 +8,26 @@ kats = KAT.register_files(
     [
         (;
             id = "BIKE_L1",
-            level = :Level1,
+            category = :Category1,
             hash = "b87120db2b3d9a5e03633d92e2a3e59a7a9ea51ff71342a85d4be02a5e057f93",
         ),
         (;
             id = "BIKE_L3",
-            level = :Level3,
+            category = :Category3,
             hash = "5595ca0cf2d56125ea22ad2ce2c90e72dddb4c32af63f2ba6887b75a47a71028",
         ),
         (;
             id = "BIKE_L5",
-            level = :Level5,
+            category = :Category5,
             hash = "8c3a6e9fae8134c8ffed9d5c06f6dbe24ee16d3b28f467dc907a251d0d13b386",
         ),
     ],
 )
 
 for kat ∈ kats
-    @eval X = BIKE.$(kat.level)
+    @eval X = BIKE.$(kat.category)
 
-    @testset "BIKE.$(kat.level): KAT.$(kat.id)" begin
+    @testset "BIKE.$(kat.category): KAT.$(kat.id)" begin
         for t ∈ kat.file
             NistyPQC.with_rng(NistDRBG.AES256CTR(t["seed"])) do
                 h_bytes = t["sk"][(4X.w + 1):(4X.w + 2X.r_bytes)]

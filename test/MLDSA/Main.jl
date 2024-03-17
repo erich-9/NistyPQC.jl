@@ -1,5 +1,5 @@
 
-import .MLDSA.Parameters: level_parameters, n, q, δ_t, ϵ_t
+import .MLDSA.Parameters: category_parameters, n, q, δ_t, ϵ_t
 import .MLDSA.General: power2_round
 import .MLDSA.NumberTheory: Rq, Tq, ntt, ntt⁻¹
 
@@ -23,12 +23,12 @@ end
     @test f̂ == ĝ
 end
 
-for level ∈ keys(level_parameters)
-    @eval X = MLDSA.$level
+for category ∈ keys(category_parameters)
+    @eval X = MLDSA.$category
 
     EC = X.Encoding
 
-    @testset "MLDSA.$level.Encoding" begin
+    @testset "MLDSA.$category.Encoding" begin
         ρ_A = rand(UInt8, X.lengths.ρ_A)
         K = rand(UInt8, X.lengths.K)
         tr = rand(UInt8, X.lengths.tr)
@@ -50,7 +50,7 @@ for level ∈ keys(level_parameters)
         @test length(EC.w₁_encode(w₁)) == X.n₂ * X.k * Base.top_set_bit(X.qm_div_2γ₂ - 1)
     end
 
-    @testset "MLDSA.$level" begin
+    @testset "MLDSA.$category" begin
         msg = rand(UInt8, 10_000)
 
         (; sk, pk) = X.generate_keys()
