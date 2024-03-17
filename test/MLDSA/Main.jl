@@ -52,10 +52,11 @@ for category ∈ keys(category_parameters)
 
     @testset "MLDSA.$category" begin
         msg = rand(UInt8, 10_000)
+        rnd = rand(UInt8, X.lengths.rnd)
 
         (; sk, pk) = X.generate_keys()
 
-        sig = X.sign_message(msg, sk)
+        sig = X.sign_message(msg, sk; randomize = rnd)
 
         @test length(sig) == X.lengths.sig
         @test X.verify_signature(msg, sig, pk)

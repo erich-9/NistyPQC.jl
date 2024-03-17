@@ -15,8 +15,6 @@ for F ∈ [:Rq, :Tq]
 
         Base.zero(::Type{$F}) = $F(zeros(Int, n))
         Base.zero(::$F) = zero($F)
-        Base.transpose(f̂::$F) = f̂
-        Base.map(func, f̂::$F) = $F(map(func, f̂.data))
 
         function map_coeffwise(func, xs::AbstractVector{$F}, dim_rg = 1)
             res = [[$F(Vector{Int}(undef, n)) for _ ∈ 1:length(xs)] for _ ∈ 1:dim_rg]

@@ -72,14 +72,6 @@ function int2bytes!(bytes, x::Integer)
     end
 end
 
-function lebytes2int(bytes, IntType::Type{<:Integer} = Int)
-    t = zero(IntType)
-    for b ∈ Iterators.reverse(bytes)
-        t = (t << 8) + b
-    end
-    t
-end
-
 function int2lebytes(x::Integer, n::Int)
     bytes = Vector{UInt8}(undef, n)
     int2lebytes(bytes, x)
