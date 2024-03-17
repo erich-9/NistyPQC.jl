@@ -29,7 +29,7 @@ for kat ∈ kats
 
     @testset "MLKEM.$(kat.category): KAT.$(kat.id)" begin
         for t ∈ kat.file
-            NistyPQC.with_rng(NistDRBG.AES256CTR(t["seed"])) do
+            NistyPQC.set_rng(NistDRBG.AES256CTR(t["seed"])) do
                 (; ek, dk) = X.generate_keys()
                 @test ek == t["pk"]
                 @test dk == t["sk"]

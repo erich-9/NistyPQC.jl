@@ -29,7 +29,7 @@ for kat ∈ kats
 
     @testset "BIKE.$(kat.category): KAT.$(kat.id)" begin
         for t ∈ kat.file
-            NistyPQC.with_rng(NistDRBG.AES256CTR(t["seed"])) do
+            NistyPQC.set_rng(NistDRBG.AES256CTR(t["seed"])) do
                 h_bytes = t["sk"][(4X.w + 1):(4X.w + 2X.r_bytes)]
                 σ = t["sk"][(end - X.ℓ + 1):end]
 

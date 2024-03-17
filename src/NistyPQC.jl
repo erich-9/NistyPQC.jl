@@ -6,13 +6,17 @@ import Random: AbstractRNG, default_rng
 
 rng = default_rng()
 
-function with_rng(f::Function, tmp_rng::AbstractRNG)
+function set_rng(rng::AbstractRNG)
+    NistyPQC.rng = rng
+end
+
+function set_rng(f::Function, rng::AbstractRNG)
     old_rng = NistyPQC.rng
-    NistyPQC.rng = tmp_rng
+    set_rng(rng)
     try
         return f()
     finally
-        NistyPQC.rng = old_rng
+        set_rng(old_rng)
     end
 end
 

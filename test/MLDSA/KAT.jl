@@ -50,7 +50,7 @@ for kat ∈ kats
 
     @testset "MLDSA.$(kat.category): KAT.$(kat.id)" begin
         for t ∈ kat.file
-            NistyPQC.with_rng(NistDRBG.AES256CTR(t["seed"])) do
+            NistyPQC.set_rng(NistDRBG.AES256CTR(t["seed"])) do
                 msg = t["msg"]
 
                 (; sk, pk) = X.generate_keys()
