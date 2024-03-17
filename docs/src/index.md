@@ -49,10 +49,10 @@ For the time being, I've included one of them in this package:
 
 Each algorithm comes in multiple variants. They are categorized according to the believed security strength. Namely, NIST defined the following five [security strength categories](https://csrc.nist.gov/projects/post-quantum-cryptography/post-quantum-cryptography-standardization/evaluation-criteria/security-(evaluation-criteria)) based on corresponding attacks on symmetric ciphers:
 
-| category | successful attack at least as hard as                               |
-|:--------:|:-------------------------------------------------------------------:|
-| 1        | key search on a block cipher with a 128-bit key (e.g. AES128)       |
-| 2        | collision search on a 256-bit hash function (e.g. SHA256/ SHA3-256) |
-| 3        | key search on a block cipher with a 192-bit key (e.g. AES192)       |
-| 4        | collision search on a 384-bit hash function (e.g. SHA384/ SHA3-384) |
-| 5        | key search on a block cipher with a 256-bit key (e.g. AES 256)      |
+| category | successful attack at least as hard as                              |
+|:--------:|:------------------------------------------------------------------:|
+| 1        | key search on a block cipher with a 128-bit key (e.g. AES128)      |
+| 2        | collision search on a 256-bit hash function (e.g. SHA256/SHA3-256) |
+| 3        | key search on a block cipher with a 192-bit key (e.g. AES192)      |
+| 4        | collision search on a 384-bit hash function (e.g. SHA384/SHA3-384) |
+| 5        | key search on a block cipher with a 256-bit key (e.g. AES256)      |

@@ -41,11 +41,11 @@ for (category, base_parameters) ∈ category_parameters
     """
         generate_keys([; seed])
 
-    Return a tuple `(; sk, pk)` consisting of a public key and the corresponding secret key.
+    Return a tuple `(; sk, pk)` consisting of a secret key and the corresponding public key.
     The length of `sk` will be $(lengths.sk) bytes and the length of `pk` $(lengths.pk)
     bytes.
 
-    For a deterministic result, the parameter `seed = (; sk, prf, pk)` consisting of three
+    For a deterministic result, a parameter `seed = (; sk, prf, pk)` consisting of three
     components of $n bytes each can be provided.
     """
     function generate_keys(;
