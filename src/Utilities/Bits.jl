@@ -1,6 +1,5 @@
 module Bits
 
-#=
 function bits2bytes(bits)
     bytes = zeros(UInt8, cld(length(bits), 8))
     j = 1
@@ -15,31 +14,16 @@ end
 
 function bytes2bits(bytes, len = 8length(bytes))
     bits = BitVector(undef, len)
-    byte = undef
-    j = firstindex(bytes)
+    byte = 0x0
+    (j, n) = (firstindex(bytes), lastindex(bytes))
     @inbounds for i ∈ eachindex(bits)
-        if iszero((i - 1) % 8)
+        if iszero((i - 1) % 8) && j ≤ n
             byte = bytes[j]
             j += 1
         end
         bits[i] = isone(byte % 2)
         byte >>= 1
     end
-    bits
-end
-=#
-
-function bits2bytes(bits)
-    n = cld(length(bits), 8)
-    bytes = Vector{UInt8}(undef, n)
-    unsafe_copyto!(pointer(bytes), reinterpret(Ptr{UInt8}, pointer(bits.chunks)), n)
-    bytes
-end
-
-function bytes2bits(bytes, len = 8length(bytes))
-    n = cld(len, 8)
-    bits = BitVector(undef, len)
-    unsafe_copyto!(reinterpret(Ptr{UInt8}, pointer(bits.chunks)), pointer(bytes), n)
     bits
 end
 
