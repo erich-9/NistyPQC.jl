@@ -1,4 +1,5 @@
 import ..Utilities: KAT, NistDRBG
+import ..run_all
 
 kats = KAT.register_files(
     KAT.NISTFormattedFile,
@@ -43,6 +44,10 @@ for kat ∈ kats
 
                 K = X.decapsulate_secret(t["ct"], dk)
                 @test K == t["ss"]
+            end
+
+            if !run_all
+                break
             end
         end
     end

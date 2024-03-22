@@ -1,6 +1,6 @@
 module NistyPQC
 
-export MLKEM, MLDSA, SLHDSA, Falcon, BIKE
+export MLKEM, MLDSA, SLHDSA, Falcon, BIKE, McEliece
 
 import Random: AbstractRNG, default_rng
 
@@ -26,5 +26,6 @@ include("MLDSA/MLDSA.jl")
 include("SLHDSA/SLHDSA.jl")
 include("Falcon/Falcon.jl")
 include("BIKE/BIKE.jl")
+include("McEliece/McEliece.jl")
 
 end # module
