@@ -1,4 +1,4 @@
-module Decoder
+module ErrorDecoding
 
 import ..Ring: Element, weight, to_bits
 import ..r, ..nb_iter, ..τ, ..θ, ..threshold

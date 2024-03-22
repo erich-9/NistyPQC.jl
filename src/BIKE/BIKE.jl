@@ -23,11 +23,10 @@ for (category, base_parameters) ∈ category_parameters
     include("Ring.jl")
     include("Sampling.jl")
     include("Hashing.jl")
-    include("Decoder.jl")
+    include("ErrorDecoding.jl")
 
     import .Sampling: D̂, Ĥ
     import .Hashing: K̂, L̂
-    import .Decoder: decode
 
     """
         generate_keys([; seed])
@@ -104,7 +103,7 @@ for (category, base_parameters) ∈ category_parameters
         (h₀, h₁) = (Ring.Element(x) for x ∈ peel(dk, [r_bytes, r_bytes]))
         σ = last(dk, ℓ)
 
-        ẽ = decode(c₀ * h₀, h₀, h₁)
+        ẽ = ErrorDecoding.decode(c₀ * h₀, h₀, h₁)
         m̃ = c₁ .⊻ L̂(ẽ...)
 
         ẽ == Ĥ(m̃) ? K̂(m̃, c) : K̂(σ, c)
