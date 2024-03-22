@@ -4,7 +4,7 @@ makedocs(
     sitename = "NistyPQC.jl",
     pages = [
         "Package" => ["index.md", "installation.md", "usage.md", "lengths.md"],
-        "KEM" => ["mlkem.md", "bike.md"],
+        "KEM" => ["mlkem.md", "bike.md", "mceliece.md"],
         "DSA" => ["mldsa.md", "slhdsa_sha2.md", "slhdsa_shake.md", "falcon.md"],
     ],
 )
