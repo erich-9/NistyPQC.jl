@@ -21,7 +21,8 @@ for (category, base_parameters) ∈ category_parameters
     import ArgCheck: @argcheck
 
     const (category_number, λ, (k, ℓ), τ, η, ω, qm_div_2γ₂, _) = $base_parameters
-    const (; γ₁, γ₂, β, lengths) = derived_parameters($category, $base_parameters)
+    const (; identifier, γ₁, γ₂, β, lengths) =
+        derived_parameters($category, $base_parameters)
 
     include("Hints.jl")
     include("Encoding.jl")
