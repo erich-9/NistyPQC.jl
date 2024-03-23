@@ -16,7 +16,7 @@ NistyPQC.set_rng(Random.MersenneTwister(4711))
 
 This last step is only necessary to guarantee reproducible outputs below.
 
-## KEM
+## [KEM](@id usage_kem)
 
 The key encapsulation mechanisms in this package all implement the following common interface:
 
@@ -52,7 +52,7 @@ With the knowledge of the decapsulation key `dk` alone, it is then possible to c
 K = KEM.decapsulate_secret(c, dk)
 ```
 
-## DSA
+## [DSA](@id usage_dsa)
 
 The digital signature algorithms in this package all implement the following common interface:
 
