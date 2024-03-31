@@ -34,7 +34,7 @@ function polymul(f::AbstractVector{T}, g::AbstractVector{T}, trunc = true) where
         h₁ = res[begin:(end - l)] = polymul(f₁, g₁, false)
         h₂ = res[(begin + l):end] = polymul(f₂, g₂, false)
 
-        res[(begin + m):(end - m)] .+= polymul(f₁ .+ f₂, g₁ + g₂, false) .- (h₁ .+ h₂)
+        res[(begin + m):(end - m)] += polymul(f₁ + f₂, g₁ + g₂, false) - (h₁ + h₂)
     end
 
     @inbounds if trunc
