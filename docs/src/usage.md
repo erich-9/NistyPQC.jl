@@ -49,7 +49,7 @@ Use the encapsulation key `ek` to produce a shared secret `K` and a ciphertext `
 With the knowledge of the decapsulation key `dk` alone, it is then possible to compute `K` from `c`:
 
 ```@example usage
-K = KEM.decapsulate_secret(c, dk)
+K == KEM.decapsulate_secret(c, dk)
 ```
 
 ## [DSA](@id usage_dsa)
