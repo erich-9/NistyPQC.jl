@@ -41,9 +41,10 @@ There is one more winner with no draft standard available yet:
 The team of winners might be joined by some of the submissions to [Round 4](https://csrc.nist.gov/Projects/post-quantum-cryptography/round-4-submissions) of the standardization project.
 Up to now, three of the candidates remain unbroken.
 All of them are [code-based](https://en.wikipedia.org/wiki/Post-quantum_cryptography#Code-based_cryptography) KEM's.
-For the time being, I've included one of them in this package:
+For the time being, I've included two of them in this package:
 
   - [BIKE](https://bikesuite.org/) (Bit Flipping Key Encapsulation)
+  - [Classic McEliece](https://classic.mceliece.org/)
 
 ## Security Categories
 

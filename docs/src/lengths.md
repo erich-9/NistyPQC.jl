@@ -31,7 +31,7 @@ end
 See [Usage of KEM](@ref usage_kem) for the definition of `ek`, `dk`, `c`, `K`.
 
 ```@example lengths
-mdtable_lengths([:MLKEM, :BIKE], [:ek, :dk, :c, :K]) # hide
+mdtable_lengths([:MLKEM, :BIKE, :McEliece], [:ek, :dk, :c, :K]) # hide
 ```
 
 ## DSA
