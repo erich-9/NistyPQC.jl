@@ -59,7 +59,7 @@ function Base.iterate(::NISTFormattedFile, state)
                     catch ArgumentError
                         y[k] = v
                     end
-                elseif occursin(r"^(?:[0-9a-fA-F]{2})+$", v)
+                elseif iseven(length(v)) && occursin(r"^[0-9a-fA-F]+$", v)
                     y[k] = hex2bytes(v)
                 end
             end
