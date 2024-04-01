@@ -53,7 +53,7 @@ for category ∈ keys(category_parameters)
             @test count(isone, e) == X.t
 
             if g !== nothing && α !== nothing
-                Tp = S.matgen!(α[1:(X.n)], g)
+                Tp = S.matgen!(view(α, 1:(X.n)), g)
                 if Tp !== nothing
                     (T, p) = Tp
 
