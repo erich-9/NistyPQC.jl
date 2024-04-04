@@ -1,7 +1,7 @@
 name = "NistyPQC"
 uuid = "2b8046e5-a088-403d-a84e-acdf171f9a66"
 authors = ["Erich Neun <erich-9@gmx.de>"]
-version = "0.0.1"
+version = "0.0.2"
 
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
