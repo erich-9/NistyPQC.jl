@@ -29,7 +29,7 @@ coeffs(::Type{Fz̄}, a::Fz̄ȳ) = [a.d[i] for i ∈ 0:(t - 1)]
 
 Fz̄ȳ(a::Fz̄y) = Fz̄ȳ!(copy(a))
 Fz̄ȳ(coeffs::AbstractVector{Fz̄}) = Fz̄ȳ!(Fz̄y(coeffs))
-Fz̄ȳ!(a::Fz̄y) = Fz̄ȳ(Raw, length(a.d) > t ? _mod!(a.d) : a)
+Fz̄ȳ!(a::Fz̄y) = Fz̄ȳ(Raw, length(a.d) > t ? _mod_padded!(a.d) : a)
 
 Base.copy(a::Fz̄ȳ) = Fz̄ȳ(Raw, copy(a.d))
 Base.:(==)(a::Fz̄ȳ, b::Fz̄ȳ) = a.d == b.d
@@ -53,6 +53,13 @@ function Base.inv(a::Fz̄ȳ)
     end
     s₀.d *= inv(r₀[0])
     Fz̄ȳ(Raw, s₀)
+end
+
+function _mod_padded!(x)
+    if length(x) < 2t - 1
+        append!(x, zeros(Fz̄, 2t - 1 - length(x)))
+    end
+    _mod!(x)
 end
 
 @generated function _mod!(x)
