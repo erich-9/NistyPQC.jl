@@ -1,6 +1,6 @@
 import .BIKE.Parameters: category_parameters, ℓ
 
-for category ∈ keys(category_parameters)
+for (category, _) ∈ category_parameters
     @eval X = BIKE.$category
 
     R = X.Ring

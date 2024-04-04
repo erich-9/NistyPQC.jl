@@ -3,15 +3,14 @@ module Parameters
 include("Approximations/Approximations.jl")
 
 import Base.Iterators: countfrom, filter
-import OrderedCollections: OrderedDict
 import Primes: isprime
 
-const category_parameters = OrderedDict(
+const category_parameters = [
     :Category1 => (1, 7, 9, 666),    # Falcon-512
     :Category5 => (5, 8, 10, 1_280), # Falcon-1024
-)
+]
 
-const (_, lg_λ_max, lg_n_max) = maximum(stack(values(category_parameters)), dims = 2)
+const (_, lg_λ_max, lg_n_max) = maximum(stack(last.(category_parameters)), dims = 2)
 
 const q = first(filter(isprime, countfrom(1, 2^(lg_n_max + 1)))) # = 12_289
 

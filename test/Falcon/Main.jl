@@ -45,7 +45,7 @@ end
     @test X.β² == 70_265_242
 end
 
-for category ∈ keys(category_parameters)
+for (category, _) ∈ category_parameters
     @eval X = Falcon.$category
 
     FR = X.Fourier.Rings

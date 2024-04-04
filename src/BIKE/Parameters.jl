@@ -1,14 +1,12 @@
 module Parameters
 
-import OrderedCollections: OrderedDict
-
 const ℓ = 32
 
-const category_parameters = OrderedDict(
+const category_parameters = [
     :Category1 => (1, 12_323, 142, 134, 5, 3, (0.00697220, 13.5300)),
     :Category3 => (3, 24_659, 206, 199, 5, 3, (0.00526500, 15.2588)),
     :Category5 => (5, 40_973, 274, 264, 5, 3, (0.00402312, 17.8785)),
-)
+]
 
 function derived_parameters(category, base_parameters)
     (category_number, r, w, t, nb_iter, τ, (θ₀, θ₁)) = base_parameters

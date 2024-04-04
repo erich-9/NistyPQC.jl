@@ -17,7 +17,7 @@ end
 
 function variants(family_name)
   family = @eval NistyPQC.$family_name
-  categories = keys(family.Parameters.category_parameters)
+  categories = first.(family.Parameters.category_parameters)
   [variant(family, category) for category ∈ categories]
 end
 

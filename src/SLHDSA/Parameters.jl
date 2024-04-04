@@ -2,21 +2,20 @@ module Parameters
 
 import ...Utilities: mgf1
 
-import OrderedCollections: OrderedDict
 import SHA: hmac_sha256, hmac_sha512, sha256, sha512
 import SHAKE: shake256
 
-const category_parameters = OrderedDict(
+const category_parameters = [
     Symbol(category, :_, hash_family) => (parameters..., hash_family) for
-    hash_family ∈ [:SHA2, :SHAKE], (category, parameters) ∈ [
+    (category, parameters) ∈ [
         :Category1s => (1, "s", 16, 7, 9, (12, 14), 4), # SLH-DSA-*-128s
         :Category1f => (1, "f", 16, 22, 3, (6, 33), 4), # SLH-DSA-*-128f
         :Category3s => (3, "s", 24, 7, 9, (14, 17), 4), # SLH-DSA-*-192s
         :Category3f => (3, "f", 24, 22, 3, (8, 33), 4), # SLH-DSA-*-192f
         :Category5s => (5, "s", 32, 8, 8, (14, 22), 4), # SLH-DSA-*-256s
         :Category5f => (5, "f", 32, 17, 4, (9, 35), 4), # SLH-DSA-*-256f
-    ]
-)
+    ] for hash_family ∈ [:SHA2, :SHAKE]
+]
 
 function derived_parameters(category, base_parameters)
     (category_number, variant, n, d, h¹, (a, k), lg_w, hash_family) = base_parameters

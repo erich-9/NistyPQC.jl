@@ -3,10 +3,8 @@ module Addressing
 import ....Utilities: int2bytes, int2bytes!
 import ..n, ..parameters_adrs
 
-import OrderedCollections: OrderedDict
-
 const (components, length_data, length_type) = let
-    x = OrderedDict()
+    x = Dict()
     local start = 1
     for (length, names) ∈ parameters_adrs.layout
         for name ∈ names

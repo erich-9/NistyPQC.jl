@@ -23,7 +23,7 @@ end
     @test f̂ == ĝ
 end
 
-for category ∈ keys(category_parameters)
+for (category, _) ∈ category_parameters
     @eval X = MLDSA.$category
 
     EC = X.Encoding

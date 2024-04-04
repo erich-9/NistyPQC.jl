@@ -1,7 +1,6 @@
 module Parameters
 
 import Base.Iterators: countfrom, filter, partition, take
-import OrderedCollections: OrderedDict
 import Primes: isprime
 import SHA: sha3_256, sha3_512
 import SHAKE: shake256, shake128_xof
@@ -39,11 +38,11 @@ J(s) = shake256(s, UInt(lengths.J))
 
 G(c) = Tuple(take(partition(sha3_512(c), lengths.K), 2))
 
-const category_parameters = OrderedDict(
+const category_parameters = [
     :Category1 => (1, 2, (3, 2), (10, 4)), # ML-KEM-512
     :Category3 => (3, 3, (2, 2), (10, 4)), # ML-KEM-768
     :Category5 => (5, 4, (2, 2), (11, 5)), # ML-KEM-1024
-)
+]
 
 function derived_parameters(category, base_parameters)
     (category_number, k, (η₁, η₂), (dᵤ, dᵥ)) = base_parameters

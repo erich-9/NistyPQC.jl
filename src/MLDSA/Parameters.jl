@@ -1,6 +1,5 @@
 module Parameters
 
-import OrderedCollections: OrderedDict
 import SHAKE: shake128_xof, shake256_xof, shake256
 
 const lg_n = 8
@@ -22,13 +21,13 @@ H(x) = shake256_xof(x)
 H(x, len) = shake256(x, len)
 H₁₂₈(x) = shake128_xof(x)
 
-const category_parameters = OrderedDict(
+const category_parameters = [
     :Category2 => (2, 16, (4, 4), 39, 2, 80, 44, 17), # ML-DSA-44
     :Category3 => (3, 24, (6, 5), 49, 4, 55, 16, 19), # ML-DSA-65
     :Category5 => (5, 32, (8, 7), 60, 2, 75, 16, 19), # ML-DSA-87
-)
+]
 
-const τ_max_cld_8 = cld(maximum(getindex.(values(category_parameters), 4)), 8) # = 8
+const τ_max_cld_8 = cld(maximum(getindex.(last.(category_parameters), 4)), 8) # = 8
 
 function derived_parameters(category, base_parameters)
     (category_number, λ, (k, ℓ), τ, η, ω, qm_div_2γ₂, lg_γ₁) = base_parameters

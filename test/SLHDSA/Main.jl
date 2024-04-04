@@ -16,7 +16,7 @@ import .SLHDSA.General: base_2ᵇ
     @test f(8, bs) >> (8l - out_len * b) == f(b, cs)
 end
 
-for category ∈ keys(category_parameters)
+for (category, _) ∈ category_parameters
     @eval X = SLHDSA.$category
 
     sk_seed = rand(UInt8, X.n)
