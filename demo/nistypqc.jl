@@ -104,7 +104,6 @@ Pick the digital signature algorithm of your choice:
 	MLDSA.Category2,
 	MLDSA.Category3,
 	MLDSA.Category5,
-	MLDSA.Category5,
 	SLHDSA.Category1s_SHA2,
 	SLHDSA.Category1s_SHAKE,
 	SLHDSA.Category1f_SHA2,
