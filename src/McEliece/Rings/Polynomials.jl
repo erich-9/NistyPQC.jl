@@ -49,7 +49,7 @@ Base.:^(a::Fz̄y, p::Integer) = Base.power_by_squaring(a, p)
 
 function Base.:+(a::Fz̄y, b::Fz̄y)
     (len_a, len_b) = (length(a.d), length(b.d))
-    @inbounds if len_a == len_b
+    if len_a == len_b
         len = len_a
         while len > 0
             s = a.d[len] + b.d[len]
@@ -106,7 +106,7 @@ function Base.divrem(a::Fz̄y, b::Fz̄y)
 end
 
 function polymul!(x, a, b)
-    @inbounds for i ∈ eachindex(a)
+    for i ∈ eachindex(a)
         for j ∈ eachindex(b)
             x[i + j - 1] += a[i] * b[j]
         end
@@ -120,7 +120,7 @@ function _divrem(a, b)
     deg ≤ 0 && return nothing
     (q, r) = (zeros(Fz̄, deg), copy(a))
     κ = inv(b[len_b])
-    @inbounds for i ∈ len_a:-1:len_b
+    for i ∈ len_a:-1:len_b
         λ = κ * r[i]
         q[i - len_b + 1] = λ
         for j ∈ eachindex(b)
@@ -131,7 +131,7 @@ function _divrem(a, b)
 end
 
 function strip_zeros!(x, bound)
-    while bound > 0 && iszero(@inbounds x[bound])
+    while bound > 0 && iszero(x[bound])
         bound -= 1
     end
     if length(x) > bound

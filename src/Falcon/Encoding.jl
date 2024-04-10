@@ -86,7 +86,7 @@ function compress(s::AbstractVector{Int}, length_out::Integer = 8length_sig_unsa
     res = BitVector(undef, length_out)
 
     p = firstindex(res)
-    @inbounds for x ∈ s
+    for x ∈ s
         res[p] = x < 0
 
         (y, k) = (abs(x) % (1 << 7), abs(x) >> 7)
@@ -108,7 +108,7 @@ function decompress(bits::AbstractVector{Bool})
     res = Vector{Int}(undef, n)
 
     p = firstindex(bits)
-    @inbounds for i ∈ 1:n
+    for i ∈ 1:n
         l = findfirst(bits[(p + 8):end])
         l === nothing && return nothing
 

@@ -48,7 +48,7 @@ end
 function Base.:(*)(f̂::Tq, ĝ::Tq)
     ĥ = Vector{Int}(undef, n)
 
-    @inbounds for i ∈ 1:n₀
+    for i ∈ 1:n₀
         (ĥ[2i - 1], ĥ[2i]) =
             basecase_multiply(f̂[2i - 1], f̂[2i], ĝ[2i - 1], ĝ[2i], ζ_2bitrevp[i])
     end
@@ -65,7 +65,7 @@ function ntt(f::Rq)
 
     i = 1
     ϕ = n₀
-    @inbounds while ϕ ≥ 2
+    while ϕ ≥ 2
         for s ∈ 0:(2ϕ):(n - 1)
             z = ζ_bitrev[i]
             i += 1
@@ -86,7 +86,7 @@ function ntt⁻¹(f̂::Tq)
 
     i = n₀ - 1
     ϕ = 2
-    @inbounds while ϕ ≤ n₀
+    while ϕ ≤ n₀
         for s ∈ 0:(2ϕ):(n - 1)
             z = ζ_bitrev[i]
             i -= 1

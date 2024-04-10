@@ -3,7 +3,7 @@ module Bits
 function bits2bytes(bits)
     bytes = zeros(UInt8, cld(length(bits), 8))
     j = 1
-    @inbounds for (i, bit) ∈ enumerate(bits)
+    for (i, bit) ∈ enumerate(bits)
         bytes[j] |= bit << ((i - 1) % 8)
         if iszero(i % 8)
             j += 1
@@ -16,7 +16,7 @@ function bytes2bits(bytes, len = 8length(bytes))
     bits = BitVector(undef, len)
     byte = 0x0
     (j, n) = (firstindex(bytes), lastindex(bytes))
-    @inbounds for i ∈ eachindex(bits)
+    for i ∈ eachindex(bits)
         if iszero((i - 1) % 8) && j ≤ n
             byte = bytes[j]
             j += 1
@@ -50,7 +50,7 @@ function int2bytes(x::Integer, n::Int)
 end
 
 function int2bytes!(bytes, x::Integer)
-    @inbounds for i ∈ Iterators.reverse(eachindex(bytes))
+    for i ∈ Iterators.reverse(eachindex(bytes))
         bytes[i] = x % UInt8
         x >>= 8
     end
@@ -63,7 +63,7 @@ function int2lebytes(x::Integer, n::Int)
 end
 
 function int2lebytes(bytes, x::Integer)
-    @inbounds for i ∈ eachindex(bytes)
+    for i ∈ eachindex(bytes)
         bytes[i] = x % UInt8
         x >>= 8
     end

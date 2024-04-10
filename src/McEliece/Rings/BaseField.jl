@@ -44,7 +44,7 @@ Base.:^(a::Fz̄, p::Integer) = Base.power_by_squaring(a, p)
 Base.:/(a::Fz̄, b::Fz̄) = a * inv(b)
 
 Base.:*(a::Fz̄, b::Fz̄) = Fz̄(Raw, _mul(a.d, b.d))
-Base.inv(a::Fz̄) = Fz̄(Raw, @inbounds __inv[a.d])
+Base.inv(a::Fz̄) = Fz̄(Raw, __inv[a.d])
 
 function _mod(a)
     e = []

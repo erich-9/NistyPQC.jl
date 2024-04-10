@@ -22,7 +22,7 @@ end
 function random_positions(rng, len, choices)
     positions = falses(len)
     s = reinterpret(UInt32, rand(rng, UInt8, choices << 2))
-    @inbounds for i ∈ choices:-1:1
+    for i ∈ choices:-1:1
         j = i + (Int64(len - i + 1) * s[choices - i + 1]) >> 32
         positions[positions[j] ? i : j] = true
     end

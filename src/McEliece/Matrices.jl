@@ -11,7 +11,7 @@ end
 function rref!(x::Vector{BitVector})
     (r, r_max) = (firstindex(x), lastindex(x))
     (c, c_max) = (firstindex(first(x)), lastindex(first(x)))
-    @inbounds while r ≤ r_max && c ≤ c_max
+    while r ≤ r_max && c ≤ c_max
         r₀ = r
         while r₀ ≤ r_max && iszero(x[r₀][c])
             r₀ += 1
@@ -35,7 +35,7 @@ end
 function rref!(x::AbstractMatrix)
     (r, r_max) = (firstindex(x, 1), lastindex(x, 1))
     (c, c_max) = (firstindex(x, 2), lastindex(x, 2))
-    @inbounds while r ≤ r_max && c ≤ c_max
+    while r ≤ r_max && c ≤ c_max
         r₀ = r
         while r₀ ≤ r_max && iszero(x[r₀, c])
             r₀ += 1
@@ -62,21 +62,21 @@ function rref!(x::AbstractMatrix)
 end
 
 function swap!(x::AbstractVector, i₁::Integer, i₂::Integer)
-    @inbounds if i₁ != i₂
+    if i₁ != i₂
         (x[i₁], x[i₂]) = (x[i₂], x[i₁])
     end
 end
 
 function swap_rows!(x::AbstractMatrix, i₁::Integer, i₂::Integer)
     i₁ != i₂ || return
-    @inbounds for j ∈ axes(x, 2)
+    for j ∈ axes(x, 2)
         (x[i₁, j], x[i₂, j]) = (x[i₂, j], x[i₁, j])
     end
 end
 
 function swap_cols!(x::AbstractMatrix, j₁::Integer, j₂::Integer)
     j₁ != j₂ || return
-    @inbounds for i ∈ axes(x, 1)
+    for i ∈ axes(x, 1)
         (x[i, j₁], x[i, j₂]) = (x[i, j₂], x[i, j₁])
     end
 end

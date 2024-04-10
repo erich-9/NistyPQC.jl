@@ -22,7 +22,7 @@ function merge_dft(f₁::AbstractVector{T}, f₂::AbstractVector{T}) where {T}
     l = min(length(f₁), length(f₂))
 
     f = Vector{T}(undef, 2l)
-    @inbounds for (j, (x₁, x₂)) ∈ enumerate(zip(f₁, f₂))
+    for (j, (x₁, x₂)) ∈ enumerate(zip(f₁, f₂))
         z = ζ(T, 2l, j)
         (f[j], f[j + l]) = (x₁ + z * x₂, x₁ - z * x₂)
     end
@@ -33,7 +33,7 @@ function split_dft(f::AbstractVector{T}) where {T}
     l = length(f) ÷ 2
 
     (f₁, f₂) = (Vector{T}(undef, l) for _ ∈ 1:2)
-    @inbounds for j ∈ 1:l
+    for j ∈ 1:l
         (c, z) = (one_half(T), ζ(T, 2l, j; inv = true))
         (x, y) = (f[begin + j - 1], f[begin + l + j - 1])
 

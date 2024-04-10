@@ -13,7 +13,7 @@ function polymul(f::AbstractVector{T}, g::AbstractVector{T}, trunc = true) where
 
     res = Vector{T}(undef, 2l)
 
-    @inbounds if l ≤ 32 # use standard multiplication
+    if l ≤ 32 # use standard multiplication
         res .= 0
         for k ∈ 0:(l - 1)
             for i ∈ 0:k
@@ -37,7 +37,7 @@ function polymul(f::AbstractVector{T}, g::AbstractVector{T}, trunc = true) where
         res[(begin + m):(end - m)] += polymul(f₁ + f₂, g₁ + g₂, false) - (h₁ + h₂)
     end
 
-    @inbounds if trunc
+    if trunc
         res = res[begin:(end - l)] - res[(begin + l):end]
     end
 

@@ -17,7 +17,7 @@ function peel(iter, n::Integer)
         end
 
         (value, state) = y
-        @inbounds values[i] = value
+        values[i] = value
 
         if i < n
             i += 1

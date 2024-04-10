@@ -26,7 +26,7 @@ function byte_encode(d, F)
     l = length(F)
 
     b = BitVector(undef, l * d)
-    @inbounds for i ∈ 0:(l - 1)
+    for i ∈ 0:(l - 1)
         a = F[i + 1]
         for j ∈ 1:d
             x = b[i * d + j] = a % 2
@@ -45,7 +45,7 @@ function byte_decode(d, B)
     l = length(b) ÷ d
 
     F = Vector{Int}(undef, l)
-    @inbounds for i ∈ 0:(l - 1)
+    for i ∈ 0:(l - 1)
         F[i + 1] = mod(sum(b[i * d + j] << (j - 1) for j ∈ 1:d), m)
     end
 

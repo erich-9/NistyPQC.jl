@@ -27,7 +27,7 @@ function bf_iter!(e, ŝ, H, T)
     (black, gray) = ([falses(r) for _ ∈ 1:2] for _ ∈ 1:2)
 
     s_bits = to_bits(ŝ[])
-    @inbounds for i ∈ 1:2
+    for i ∈ 1:2
         v = to_bits(H[i])
         for j ∈ 1:r
             c = sum(s_bits .& v)
@@ -46,7 +46,7 @@ end
 
 function bf_masked_iter!(mask, e, ŝ, H, T)
     s_bits = to_bits(ŝ[])
-    @inbounds for i ∈ 1:2
+    for i ∈ 1:2
         v = to_bits(H[i])
         for j ∈ 1:r
             if mask[i][j] && sum(s_bits .& v) < T
@@ -59,11 +59,9 @@ function bf_masked_iter!(mask, e, ŝ, H, T)
 end
 
 function flip!(e, ŝ, H, mask, i)
-    @inbounds begin
-        Δe = Element(mask[i])
-        e[i] += Δe
-        ŝ[] += H[i] * Δe
-    end
+    Δe = Element(mask[i])
+    e[i] += Δe
+    ŝ[] += H[i] * Δe
 end
 
 end # module

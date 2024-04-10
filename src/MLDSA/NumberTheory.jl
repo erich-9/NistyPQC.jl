@@ -68,7 +68,7 @@ function ntt(f::Rq)
 
     i = 1
     ϕ = n
-    @inbounds while ϕ > 1
+    while ϕ > 1
         ϕ >>= 1
         for s ∈ 0:(2ϕ):(n - 1)
             z = ζ_bitrev[i]
@@ -89,7 +89,7 @@ function ntt⁻¹(f̂::Tq)
 
     i = n - 1
     ϕ = 1
-    @inbounds while ϕ < n
+    while ϕ < n
         for s ∈ 0:(2ϕ):(n - 1)
             z = ζ_bitrev[i]
             i -= 1

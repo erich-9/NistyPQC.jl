@@ -72,7 +72,7 @@ end
             end
         end
     quote
-        @inbounds for i ∈ ($(t - 1)):-1:1
+        for i ∈ ($(t - 1)):-1:1
             $(Expr(:block, reduce_coeff.(F[2:end])...))
         end
         Fz̄y!(x; bound = min(length(x), t))
