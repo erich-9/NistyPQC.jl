@@ -38,7 +38,7 @@ function dk_decode(dk)
     p = fast_variant ? findall(bytes2bits(p̄)) .+ (m * t - μ) : Int[]
     g = Fz̄y([(Fz̄(bytes2bits(x)) for x ∈ partition(ḡ, cld(m, 8)))...; one(Fz̄)])
     α = [
-        Fz̄(reverse(digits(Bool, x; base = 2, pad = m))) for
+        Fz̄(digits(Bool, x; base = 2, pad = m); high2low = true) for
         x ∈ BenesNetwork.permutation(bytes2bits(ᾱ))
     ]
 

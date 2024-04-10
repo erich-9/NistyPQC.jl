@@ -2,7 +2,7 @@ module Sampling
 
 import ....Utilities: bytes2bits
 import ...Matrices: rref!, semisystematic_form!, swap!, swap_cols!
-import ..Rings: Fz̄, z̄, Fz̄y, Fz̄ȳ, ȳ, coeffs
+import ..Rings: Fz̄, Fz̄y, Fz̄ȳ, coeffs
 import ..n, ..m, ..t, ..k, ..τ, ..μ, ..ν, ..σ₁, ..σ₂
 
 import Base.Iterators: partition
@@ -39,7 +39,7 @@ function matgen!(α, g)
 end
 
 function irreducible(bits)
-    β = evalpoly(ȳ, [evalpoly(z̄, first(x, m)) for x ∈ partition(bits, σ₁)])
+    β = Fz̄ȳ([Fz̄(first(x, m)) for x ∈ partition(bits, σ₁)])
 
     x = Vector{Fz̄ȳ}(undef, t + 1)
     x[1] = one(Fz̄ȳ)
@@ -56,7 +56,7 @@ end
 function field_ordering(bits)
     a = [evalpoly(2, x) for x ∈ partition(bits, σ₂)]
     allunique(a) || return nothing
-    [evalpoly(z̄, reverse(digits(x - 1; base = 2, pad = m))) for x ∈ sortperm(a)]
+    [Fz̄(digits(Bool, x - 1; base = 2, pad = m); high2low = true) for x ∈ sortperm(a)]
 end
 
 function fixed_weight(rng)

@@ -27,9 +27,9 @@ Base.convert(::Type{Fz̄}, a::Integer) = Fz̄(Raw, isodd(a))
 
 coeffs(::Type{Bool}, a::Fz̄; pad::Integer = m) = digits(Bool, a.d; base = 2, pad)
 
-function Fz̄(coeffs::AbstractVector{Bool})
+function Fz̄(coeffs::AbstractVector{Bool}; high2low = false)
     d = zero(T_Fz̄)
-    for x ∈ reverse(coeffs)
+    for x ∈ (high2low ? coeffs : reverse(coeffs))
         d = d << 1 + x
     end
     Fz̄(Raw, d)
