@@ -11,7 +11,7 @@ function peel(iter, n::Integer)
     y = iterate(iter)
     i = 1
     while true
-        if y === nothing
+        if isnothing(y)
             i -= 1
             break
         end

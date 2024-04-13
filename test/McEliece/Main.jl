@@ -36,7 +36,7 @@ end
             0 0 0 0 0 0 0 1 0 1
         ],
     )
-    @test p12 === nothing
+    @test isnothing(p12)
     @test p48 == [2, 3, 5, 8]
 end
 
@@ -102,9 +102,9 @@ for (category, _) ∈ category_parameters
 
         @test count(isone, e) == X.t
 
-        if g !== nothing && α !== nothing
+        if !isnothing(g) && !isnothing(α)
             Tp = S.matgen!(view(α, 1:(X.n)), g)
-            if Tp !== nothing
+            if !isnothing(Tp)
                 (T, p) = Tp
 
                 @test length(p) == X.μ

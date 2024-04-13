@@ -11,7 +11,7 @@ function generate()
         (f, g) = ([sample_σ_fg_int() for _ ∈ 1:n] for _ ∈ 1:2)
         if invertible(f) && gramnorm_inbound(f, g)
             solution = solve(BigInt.(f), BigInt.(g))
-            if solution !== nothing
+            if !isnothing(solution)
                 (F, G) = solution
                 return (f, g, Int.(F), Int.(G))
             end
@@ -40,7 +40,7 @@ function solve(f::AbstractVector{T}, g::AbstractVector{T}) where {T}
         end
     else
         solution = solve(fieldnorm.((f, g))...)
-        if solution !== nothing
+        if !isnothing(solution)
             (F̄, Ḡ) = solution
             return reduce!(twisted_lift(F̄, g), twisted_lift(Ḡ, f), f, g)
         end

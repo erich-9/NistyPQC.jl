@@ -60,7 +60,7 @@ function maybe_sig_decode(σ)
     z = [bitunpack(x, γ₁ - 1, γ₁) for x ∈ partition(z_bytes, c_z)]
     h = hint_bitunpack(h_bytes)
 
-    h === nothing && return nothing
+    isnothing(h) && return nothing
 
     (c̃, z, h)
 end

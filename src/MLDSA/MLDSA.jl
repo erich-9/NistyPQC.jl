@@ -127,7 +127,7 @@ for (category, base_parameters) ∈ category_parameters
         (ρ_A, t₁) = Encoding.pk_decode(pk)
 
         (c̃, z, h) = let sig = Encoding.maybe_sig_decode(sig)
-            sig === nothing && return false
+            isnothing(sig) && return false
             sig
         end
 

@@ -36,8 +36,6 @@ for (category, base_parameters) ∈ category_parameters
     include("Hypertree.jl")
     include("FORS.jl")
 
-    import .Addressing: SecretAddress, PublicAddress, change_type_to_fors_tree!
-
     """
         generate_keys([; seed])
 
@@ -55,7 +53,7 @@ for (category, base_parameters) ∈ category_parameters
         V <: AbstractVector{UInt8},
         W <: AbstractVector{UInt8},
     }
-        (sk_seed, sk_prf, pk_seed) = if seed !== nothing
+        (sk_seed, sk_prf, pk_seed) = if !isnothing(seed)
             @argcheck length(seed.sk) == n
             @argcheck length(seed.prf) == n
             @argcheck length(seed.pk) == n
@@ -100,7 +98,7 @@ for (category, base_parameters) ∈ category_parameters
 
         randomizer = hashers_msg.PRF(sk_prf, vcat(opt_rand, msg), n)
 
-        adrs = SecretAddress(sk_seed, pk_seed)
+        adrs = Addressing.SecretAddress(sk_seed, pk_seed)
         (msg_digest, idx_tree, idx_leaf) =
             digest_message!(adrs, msg, randomizer, pk_seed, pk_root)
 
@@ -134,7 +132,7 @@ for (category, base_parameters) ∈ category_parameters
         (randomizer, sig_fors, sig_tree) =
             peel(sig, [n, parameters_fors.σ, parameters_tree.σ])
 
-        adrs = PublicAddress(pk_seed)
+        adrs = Addressing.PublicAddress(pk_seed)
         (msg_digest, idx_tree, idx_leaf) =
             digest_message!(adrs, msg, randomizer, pk_seed, pk_root)
 
@@ -153,7 +151,7 @@ for (category, base_parameters) ∈ category_parameters
         idx_tree = bytes2int(tmp_idx_tree, parameters_tree.T_idx) % parameters_tree.ν
         idx_leaf = bytes2int(tmp_idx_leaf, parameters_xmss.T_idx) % parameters_xmss.ν
 
-        change_type_to_fors_tree!(adrs, idx_tree, idx_leaf)
+        Addressing.change_type_to_fors_tree!(adrs, idx_tree, idx_leaf)
 
         (msg_digest, idx_tree, idx_leaf)
     end

@@ -40,7 +40,7 @@ for (category, base_parameters) ∈ category_parameters
     function generate_keys(;
         seed::Union{Nothing, @NamedTuple{h::U, σ::V}} = nothing,
     ) where {U <: AbstractVector{UInt8}, V <: AbstractVector{UInt8}}
-        (h_seed, σ) = if seed !== nothing
+        (h_seed, σ) = if !isnothing(seed)
             @argcheck length(seed.h) == ℓ
             @argcheck length(seed.σ) == ℓ
 

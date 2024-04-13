@@ -58,7 +58,7 @@ function rej_ntt_poly(seed)
         (bytes, bytestream) = peel(bytestream, 3)
 
         z = coeff_from_three_bytes(bytes...)
-        if z !== nothing
+        if !isnothing(z)
             â[j] = z
             j += 1
         end
@@ -77,13 +77,13 @@ function rej_bounded_poly(seed)
         (b₁, b₀) = divrem(Int(byte), 16)
 
         z₀ = coeff_from_halfbyte(b₀)
-        if z₀ !== nothing
+        if !isnothing(z₀)
             a[j] = z₀
             j += 1
         end
 
         z₁ = coeff_from_halfbyte(b₁)
-        if z₁ !== nothing && j ≤ n
+        if !isnothing(z₁) && j ≤ n
             a[j] = z₁
             j += 1
         end

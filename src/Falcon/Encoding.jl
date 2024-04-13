@@ -53,7 +53,7 @@ end
 function maybe_encode(sig::Signature)
     s₂_compressed = compress(sig.s₂)
 
-    if s₂_compressed === nothing
+    if isnothing(s₂_compressed)
         return nothing
     end
 
@@ -71,7 +71,7 @@ function maybe_decode(::Type{Signature}, bytes::AbstractVector{UInt8})
     salt = @view bytes[(begin + 1):(begin + lengths.salt)]
     s₂ = decompress(revbytes2bits(@view bytes[(end - length_sig_unsalted + 1):end]))
 
-    s₂ === nothing ? nothing : Signature(salt, s₂)
+    isnothing(s₂) ? nothing : Signature(salt, s₂)
 end
 
 function headerbits(typecode)
@@ -110,7 +110,7 @@ function decompress(bits::AbstractVector{Bool})
     p = firstindex(bits)
     for i ∈ 1:n
         l = findfirst(bits[(p + 8):end])
-        l === nothing && return nothing
+        isnothing(l) && return nothing
 
         res[i] = (-1)^bits[p] * evalpoly(2, [reverse(bits[(p + 1):(p + 7)]); l - 1])
 

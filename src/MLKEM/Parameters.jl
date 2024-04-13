@@ -23,7 +23,7 @@ const n₂ = n >> 3 # = 32
 
 const q = first(filter(isprime, countfrom(κ * n + 1, n))) # = 3329
 
-const dₘₐₓ = ceil(Int, log2(q)) # = 12
+const dₘₐₓ = Base.top_set_bit(q - 1) # = 12
 const ζ = findfirst(x -> powermod(x, n₀, q) == q - 1, 1:q) # 17
 const n₀⁻¹ = invmod(n₀, q) # = 3303
 

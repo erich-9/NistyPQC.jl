@@ -25,7 +25,7 @@ function matgen!(α, g)
     end
 
     p = semisystematic_form!(H̄, μ, ν)
-    p !== nothing || return nothing
+    isnothing(p) && return nothing
 
     H = [H̄[i][j] for i ∈ 1:(m * t), j ∈ 1:n]
 

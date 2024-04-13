@@ -42,11 +42,11 @@ function Base.iterate(::NISTFormattedFile, state)
 
             m = match(r"^([^=\s]*)\s*=\s*([^=\s]*)$", line)
 
-            if m !== nothing
+            if !isnothing(m)
                 (k, v) = m.captures
 
                 if k == "count"
-                    if y !== nothing
+                    if !isnothing(y)
                         return (y, (x, it))
                     else
                         y = Dict{String, Any}()
@@ -66,7 +66,7 @@ function Base.iterate(::NISTFormattedFile, state)
 
             it = iterate(x, it_state)
 
-            if it === nothing
+            if isnothing(it)
                 return (y, ())
             end
         end

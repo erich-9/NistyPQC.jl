@@ -112,7 +112,7 @@ for (category, base_parameters) ∈ category_parameters
                 sig = Encoding.maybe_encode(
                     Signature(salt, (x -> convert(Int, x)).(dft⁻¹(ŝ₂))),
                 )
-                sig === nothing && continue
+                isnothing(sig) && continue
                 return sig
             end
         end
@@ -133,7 +133,7 @@ for (category, base_parameters) ∈ category_parameters
         h = Encoding.decode(PublicKey, pk).h
 
         (salt, s₂) = let sig = Encoding.maybe_decode(Signature, sig)
-            sig === nothing && return false
+            isnothing(sig) && return false
             (getproperty(sig, p) for p ∈ [:salt, :s₂])
         end
 

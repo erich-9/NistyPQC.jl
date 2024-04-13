@@ -22,8 +22,8 @@ for (category, _) ∈ category_parameters
     sk_seed = rand(UInt8, X.n)
     pk_seed = rand(UInt8, X.n)
 
-    sa = X.SecretAddress(sk_seed, pk_seed)
-    pa = X.PublicAddress(pk_seed)
+    sa = X.Addressing.SecretAddress(sk_seed, pk_seed)
+    pa = X.Addressing.PublicAddress(pk_seed)
 
     @testset "SLHDSA.$category.WOTS" begin
         msg = rand(UInt8, X.WOTS.π.μ)

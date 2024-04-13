@@ -29,7 +29,7 @@ degree(a::Fz̄y) = length(a.d) - 1
 
 function Fz̄y(x::AbstractVector{Fz̄})
     i₀ = findlast(!iszero, x)
-    if i₀ === nothing
+    if isnothing(i₀)
         zero(Fz̄y)
     else
         Fz̄y(Raw, view(x, 1:i₀))
@@ -92,17 +92,17 @@ end
 
 function Base.:÷(a::Fz̄y, b::Fz̄y)
     qr = _divrem(a.d, b.d)
-    qr === nothing ? zero(Fz̄y) : Fz̄y!(first(qr))
+    isnothing(qr) ? zero(Fz̄y) : Fz̄y!(first(qr))
 end
 
 function Base.:%(a::Fz̄y, b::Fz̄y)
     qr = _divrem(a.d, b.d)
-    qr === nothing ? a : Fz̄y!(last(qr))
+    isnothing(qr) ? a : Fz̄y!(last(qr))
 end
 
 function Base.divrem(a::Fz̄y, b::Fz̄y)
     qr = _divrem(a.d, b.d)
-    qr === nothing ? (zero(Fz̄y), a) : Fz̄y!.(qr)
+    isnothing(qr) ? (zero(Fz̄y), a) : Fz̄y!.(qr)
 end
 
 function polymul!(x, a, b)

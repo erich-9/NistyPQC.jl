@@ -92,9 +92,9 @@ for (category, _) ∈ category_parameters
         b = BitVector(repeat([0, 0, 0, 0, 0, 0, 0, 0, 1], X.n))
         s = [EC.headerbyte([0, 0, 1, 1]); zeros(UInt8, X.lengths.sig - 1)]
 
-        @test EC.compress(-100:100, 100) === nothing
-        @test EC.decompress(b) !== nothing
-        @test EC.decompress([b; true]) === nothing
+        @test isnothing(EC.compress(-100:100, 100))
+        @test !isnothing(EC.decompress(b))
+        @test isnothing(EC.decompress([b; true]))
     end
 
     @testset "Falcon.$category" begin

@@ -44,13 +44,13 @@ for (category, base_parameters) ∈ category_parameters
             (ᾱ, ḡ) = peel(bytes2bits(β), [σ₂ * q, σ₁ * t])
 
             α = Sampling.field_ordering(ᾱ)
-            α !== nothing || continue
+            isnothing(α) && continue
 
             g = Sampling.irreducible(ḡ)
-            g !== nothing || continue
+            isnothing(g) && continue
 
             Tp = Sampling.matgen!(view(α, 1:n), g)
-            Tp !== nothing || continue
+            isnothing(Tp) && continue
             (T, p) = Tp
 
             ek = Encoding.ek_encode(T)
@@ -97,7 +97,7 @@ for (category, base_parameters) ∈ category_parameters
 
         (δ, p, g, α, s) = Encoding.dk_decode(dk)
         e = ErrorDecoding.decode(bytes2bits(c, m * t), g, α)
-        (b, ẽ) = e === nothing ? (0x0, s) : (0x1, e)
+        (b, ẽ) = isnothing(e) ? (0x0, s) : (0x1, e)
 
         Hashing.H([b; bits2bytes(ẽ); c])
     end
