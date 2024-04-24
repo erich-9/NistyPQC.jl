@@ -3,7 +3,7 @@ module Hashing
 import ..Ring
 import ..ℓ
 
-import SHA: sha3_384
+import CryptographicHashFunctions: sha3_384
 
 function K̂(m::AbstractVector{UInt8}, c::AbstractVector{UInt8})
     sha3_384([m; c])[1:ℓ]

@@ -2,8 +2,7 @@ module Parameters
 
 import ...Utilities: mgf1
 
-import SHA: hmac_sha256, hmac_sha512, sha256, sha512
-import SHAKE: shake256
+import CryptographicHashFunctions: hmac_sha256, hmac_sha512, sha256, sha512, shake256
 
 const category_parameters = [
     Symbol(category, :_, hash_family) => (parameters..., hash_family) for

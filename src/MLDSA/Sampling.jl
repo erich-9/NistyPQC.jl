@@ -1,10 +1,12 @@
 module Sampling
 
-import ....Utilities: peel, bytes2bits, int2lebytes
+import ....Utilities: bytes2bits, int2lebytes
 import ...Parameters: τ_max_cld_8
 import ...NumberTheory: Rq, Tq
 import ..Encoding: bitunpack
 import ..n, ..n₂, ..q, ..k, ..ℓ, ..τ, ..η, ..γ₁, ..lengths, ..H, ..H₁₂₈
+
+import CryptographicHashFunctions: digest!
 
 function expand_A(ρ_A)
     Â = Matrix{Tq}(undef, (k, ℓ))
@@ -35,11 +37,12 @@ end
 function sample_in_ball(seed)
     c = zeros(Int, n)
 
-    (bytes, bytestream) = peel(H(seed), τ_max_cld_8)
+    xof = H(seed)
+    bytes = digest!(xof, τ_max_cld_8)
     (bits, j) = (bytes2bits(bytes), undef)
     for i ∈ (n - τ):(n - 1)
         while true
-            (j, bytestream) = peel(bytestream)
+            j = digest!(xof, 1)[]
             j ≤ i && break
         end
         c[i + 1] = c[j + 1]
@@ -52,12 +55,10 @@ end
 function rej_ntt_poly(seed)
     â = Vector{Int}(undef, n)
 
-    bytestream = H₁₂₈(seed)
+    xof = H₁₂₈(seed)
     j = 1
     while j ≤ n
-        (bytes, bytestream) = peel(bytestream, 3)
-
-        z = coeff_from_three_bytes(bytes...)
+        z = coeff_from_three_bytes(digest!(xof, 3)...)
         if !isnothing(z)
             â[j] = z
             j += 1
@@ -70,11 +71,10 @@ end
 function rej_bounded_poly(seed)
     a = Vector{Int}(undef, n)
 
-    bytestream = H(seed)
+    xof = H(seed)
     j = 1
     while j ≤ n
-        (byte, bytestream) = peel(bytestream)
-        (b₁, b₀) = divrem(Int(byte), 16)
+        (b₁, b₀) = divrem(Int(digest!(xof, 1)[]), 16)
 
         z₀ = coeff_from_halfbyte(b₀)
         if !isnothing(z₀)

@@ -1,9 +1,8 @@
 module Parameters
 
 import Base.Iterators: countfrom, filter, partition, take
+import CryptographicHashFunctions: sha3_256, sha3_512, shake128, shake256
 import Primes: isprime
-import SHA: sha3_256, sha3_512
-import SHAKE: shake256, shake128_xof
 
 const (lg_n, κ) = (8, 4)
 
@@ -31,7 +30,7 @@ const β = typemax(UInt8) + 1 # = 256
 const ξ = (1 << dₘₐₓ) ÷ β # = 16
 
 PRF(η, s, b) = shake256([s; UInt8(b)], UInt(n₁ * η))
-XOF(ρ, i, j) = shake128_xof([ρ; UInt8(i); UInt8(j)])
+XOF(ρ, i, j) = shake128([ρ; UInt8(i); UInt8(j)])
 
 H(s) = sha3_256(s)[1:(lengths.H)]
 J(s) = shake256(s, UInt(lengths.J))

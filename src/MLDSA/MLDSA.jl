@@ -12,13 +12,13 @@ for (category, base_parameters) ∈ category_parameters
     export generate_keys, sign_message, verify_signature
 
     import ...rng
-    import ...Utilities: peel
     import ..Parameters: n, n₂, q, δ_t, H, H₁₂₈
     import ..Parameters: derived_parameters
     import ..General: modq⁺⁻, power2_round
     import ..NumberTheory: Rq, ntt, ntt⁻¹, map_coeffwise
 
     import ArgCheck: @argcheck
+    import CryptographicHashFunctions: digest!
 
     const (category_number, λ, (k, ℓ), τ, η, ω, qm_div_2γ₂, _) = $base_parameters
     const (; identifier, γ₁, γ₂, β, lengths) =
@@ -40,7 +40,9 @@ for (category, base_parameters) ∈ category_parameters
     function generate_keys(; ξ::AbstractVector{UInt8} = rand(rng, UInt8, lengths.ξ))
         @argcheck length(ξ) == lengths.ξ
 
-        (ρ_A, ρ_S, K) = peel(H(ξ), [lengths.ρ_A, lengths.ρ_S, lengths.K])
+        (ρ_A, ρ_S, K) = let xof = H(ξ)
+            (digest!(xof, l) for l ∈ [lengths.ρ_A, lengths.ρ_S, lengths.K])
+        end
 
         Â = Sampling.expand_A(ρ_A)
         (s₁, s₂) = Sampling.expand_S(ρ_S)

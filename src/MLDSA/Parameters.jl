@@ -1,6 +1,6 @@
 module Parameters
 
-import SHAKE: shake128_xof, shake256_xof, shake256
+import CryptographicHashFunctions: shake128, shake256
 
 const lg_n = 8
 const q = 8_380_417
@@ -17,9 +17,9 @@ const ϵ_t = Base.top_set_bit(q - 1) - δ_t # = 10
 const lengths =
     (; c̃₁ = 32, ξ = 32, ρ_A = 32, ρ_S = 64, ρ_mask = 64, K = 32, tr = 64, μ = 64, rnd = 32)
 
-H(x) = shake256_xof(x)
+H(x) = shake256(x)
 H(x, len) = shake256(x, len)
-H₁₂₈(x) = shake128_xof(x)
+H₁₂₈(x) = shake128(x)
 
 const category_parameters = [
     :Category2 => (2, 16, (4, 4), 39, 2, 80, 44, 17), # ML-DSA-44

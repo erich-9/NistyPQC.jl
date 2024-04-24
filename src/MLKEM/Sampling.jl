@@ -4,15 +4,14 @@ import ..Parameters: n, n₁, q, β, ξ
 import ..General: bytes2bits
 import ..NumberTheory: Rq, Tq
 
-function sample_ntt(B)
-    # @assert Base.IteratorSize(B) == Base.IsInfinite()
+import CryptographicHashFunctions: digest!
 
+function sample_ntt(B)
     â = Vector{Int}(undef, n)
 
     j = 1
-    B3 = Iterators.partition(B, 3)
     while j ≤ n
-        (b₁, b₂, b₃), B3 = Iterators.peel(B3)
+        (b₁, b₂, b₃) = digest!(B, 3)
 
         d₁ = b₁ + β * (b₂ % ξ)
         d₂ = b₂ ÷ ξ + ξ * b₃
